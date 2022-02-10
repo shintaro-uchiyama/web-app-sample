@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - "**"
+      - "!main"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@main
+      - name: generate mermaid image
+        run: |
+          docker pull minlag/mermaid-cli:8.13.10
+          docker run -it -v $GITHUB_WORKSPACE/docs/design:/data minlag/mermaid-cli -i /data/index.template.md -o /data/index.md
+      - name: git setting
+        run: |
+          git config --local user.email "shintaro.a.uchiyama@gmail.com"
+          git config --local user.name "shintaro-uchiyama"
+      - name: Commit files
+        run: |
+          git add .
+          git commit -m "feat(docs): generate mermaid image" -a
+          git pull
+          git push origin ${{github.head_ref}}
