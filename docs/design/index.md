@@ -22,9 +22,7 @@ DDD ベースの設計を行う
 # ドメインモデリング
 
 {% mermaid %}
-graph TD;
-A-->B;
-A-->C;
-B-->D;
-C-->D;
+
+![diagram](./index-1.svg)
+
 {% endmermaid %}
