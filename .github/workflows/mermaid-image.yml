@@ -3,12 +3,27 @@ on:
     branches:
       - "**"
       - "!main"
+env:
+  LOCALSTACK_CACHE_PATH: localstack-image
+  LOCALSTACK_VERSION: 0.1.0
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@main
+      - name: Cache a LocalStack Docker image
+        id: cache-localstack
+        uses: actions/cache@v2
+        with:
+         path: ${{ env.LOCALSTACK_CACHE_PATH }}
+         key: ${{ runner.os }}-localstack-${{ env.LOCALSTACK_VERSION }}
+      - name: Pull and save a LocalStack Docker image
+        if: steps.cache-localstack.outputs.cache-hit != 'true'
+        run: |
+          docker pull localstack/localstack:${LOCALSTACK_VERSION}
+          docker save localstack/localstack:${LOCALSTACK_VERSION} -o ${LOCALSTACK_CACHE_PATH}
+        run: docker load -i ${LOCALSTACK_CACHE_PATH}
       - name: generate mermaid image
         run: |
           docker pull minlag/mermaid-cli:8.13.10
