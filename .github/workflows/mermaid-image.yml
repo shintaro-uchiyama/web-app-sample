@@ -4,30 +4,29 @@ on:
       - "**"
       - "!main"
 env:
-  LOCALSTACK_CACHE_PATH: localstack-image
-  LOCALSTACK_VERSION: 0.1.0
+  MREMAID_CI_CACHE_PATH: mermaid-ci-image
+  NERMAID_CI_VERSION: 8.13.10
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@main
-      - name: Cache a LocalStack Docker image
-        id: cache-localstack
+      - name: Cache mermaid-cli docker image
+        id: cache-mermaid-cli
         uses: actions/cache@v2
         with:
-         path: ${{ env.LOCALSTACK_CACHE_PATH }}
-         key: ${{ runner.os }}-localstack-${{ env.LOCALSTACK_VERSION }}
-      - name: Pull and save a LocalStack Docker image
-        if: steps.cache-localstack.outputs.cache-hit != 'true'
+         path: ${{ env.MREMAID_CI_CACHE_PATH }}
+         key: ${{ runner.os }}-mermaid-cli-${{ env.NERMAID_CI_VERSION }}
+      - name: Pull and save mermaid cli docker image
+        if: steps.cache-mermaid-cli.outputs.cache-hit != 'true'
         run: |
-          docker pull localstack/localstack:${LOCALSTACK_VERSION}
-          docker save localstack/localstack:${LOCALSTACK_VERSION} -o ${LOCALSTACK_CACHE_PATH}
-      - run: docker load -i ${LOCALSTACK_CACHE_PATH}
+          docker pull minlag/mermaid-cli:${NERMAID_CI_VERSION}
+          docker save minlag/mermaid-cli:${NERMAID_CI_VERSION} -o ${MREMAID_CI_CACHE_PATH}
+      - run: docker load -i ${MREMAID_CI_CACHE_PATH}
       - name: generate mermaid image
         run: |
-          docker pull minlag/mermaid-cli:8.13.10
-          docker run -v $GITHUB_WORKSPACE/docs/design:/data minlag/mermaid-cli -i /data/index.template.md -o /data/index.md
+          docker run -v $GITHUB_WORKSPACE/docs/design:/data minlag/mermaid-cli:${NERMAID_CI_VERSION} -i /data/index.template.md -o /data/index.md
       - name: git setting
         run: |
           git config --local user.email "shintaro.a.uchiyama@gmail.com"
