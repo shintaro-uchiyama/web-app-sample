@@ -2,6 +2,5 @@
 
 web アプリのベースとなる部分を実装してみる
 
-- [設計](./design/)
-- [実装](./coding/)
-
+- [設計](./design/index.md)
+- [実装](./coding/index.md)

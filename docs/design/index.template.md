@@ -1,6 +1,6 @@
 # 概要
 
-DDD ベースの設計を行う
+DDD(Domain-driven design) を用いた設計・開発を行います
 
 # ユースケース
 
@@ -16,14 +16,46 @@ DDD ベースの設計を行う
 1. 配送管理
    1. 配送部門の社員は購入された商品を配送する
 
-境界づけられたコンテキストの説明のために販売管理・配送管理を記載してますが  
-戦略的 DDD までにとどめ、戦術的 DDD、実際の実装はユーザー管理までにとどめます
-
 # ドメインモデリング
 
+作成したユースケースを元にドメインモデリングを行う  
+本ドメインモデルが実際のコーディングでも利用されます
+
+以下を意識してモデリングを行う
+
+1. Bounded Context を明確にする
+   1. この単位でシステム・チームが分離される
+1. 代表的な属性まで書き、メソッドは書かない
+   1. [Mermaid](https://mermaid-js.github.io/mermaid) がコメント書けないのでメソッド欄にしょうがなく...
+1. 集約の範囲を明確にする
+1. 多重度も記載
+
+## Identity Context
+
 ```mermaid
-graph TD;
-A-->B;
-A-->C;
-B-->D;
+ classDiagram
+      class User{
+         <<Authentication>>
+         uuid
+         email
+         emailの重複は許可しない()
+      }
+      class Role{
+         <<Authentication>>
+         name
+      }
+      class Permission{
+         <<Authentication>>
+         name
+      }
+      User "1" -- "1" Role
+      Role "1" -- "1..*" Permission
 ```
+
+## Order Context
+
+今回は検討しない
+
+## Delivery Context
+
+今回は検討しない
