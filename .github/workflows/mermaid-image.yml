@@ -29,8 +29,8 @@ jobs:
           docker run -v $GITHUB_WORKSPACE/docs/design:/data minlag/mermaid-cli:${NERMAID_CI_VERSION} -i /data/index.template.md -o /data/index.md
       - name: git setting
         run: |
-          git config --local user.email "shintaro.a.uchiyama@gmail.com"
-          git config --local user.name "shintaro-uchiyama"
+          git config user.name "$(git log -n 1 --pretty=format:%an)"
+          git config user.email "$(git log -n 1 --pretty=format:%ae)"
       - name: Commit files
         run: |
           git add .
