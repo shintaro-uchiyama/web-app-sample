@@ -21,13 +21,9 @@ DDD ベースの設計を行う
 
 # ドメインモデリング
 
-{% mermaid %}
-
 ```mermaid
 graph TD;
 A-->B;
 A-->C;
 B-->D;
 ```
-
-{% endmermaid %}
