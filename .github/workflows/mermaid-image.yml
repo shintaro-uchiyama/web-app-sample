@@ -23,7 +23,7 @@ jobs:
         run: |
           docker pull localstack/localstack:${LOCALSTACK_VERSION}
           docker save localstack/localstack:${LOCALSTACK_VERSION} -o ${LOCALSTACK_CACHE_PATH}
-        run: docker load -i ${LOCALSTACK_CACHE_PATH}
+      - run: docker load -i ${LOCALSTACK_CACHE_PATH}
       - name: generate mermaid image
         run: |
           docker pull minlag/mermaid-cli:8.13.10
