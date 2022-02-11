@@ -21,8 +21,4 @@ DDD ベースの設計を行う
 
 # ドメインモデリング
 
-{% mermaid %}
-
 ![diagram](./index-1.svg)
-
-{% endmermaid %}
