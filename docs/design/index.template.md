@@ -21,4 +21,9 @@ DDD ベースの設計を行う
 
 # ドメインモデリング
 
-![diagram](./index-1.svg)
+```mermaid
+graph TD;
+A-->B;
+A-->C;
+B-->D;
+```
