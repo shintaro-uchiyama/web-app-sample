@@ -4,7 +4,7 @@ mkdir -p output/html
 find . -type d -not -path './output*' -not -path './scripts*' -not -path '.' -exec sh -c 'mkdir -p output/html/"${0}"' {} \;
 
 # convert from md to html
-find . -iname "index.md" -type f -exec sh -c 'docker run --rm --volume "`pwd`:/data" pandoc/latex:2.17.1 -s -t html5 -c github.css "${0}" -o "output/html/${0%.md}.html"' {} \;
+find . -iname "index.md" -type f -exec sh -c 'docker run --rm --volume "`pwd`:/data" pandoc/latex:2.17.1 -s -t html5 -c github.css --metadata title="${0}" "${0}" -o "output/html/${0%.md}.html"' {} \;
 # copy base css file
 find output/html -type d | xargs -I {} cp github.css {}
 # copy image files
