@@ -4,9 +4,11 @@ mkdir -p output/html
 find . -type d -not -path './output*' -not -path './scripts*' -not -path '.' -exec sh -c 'mkdir -p output/html/"${0}"' {} \;
 
 # convert from md to html
-find . -iname "index.md" -type f -exec sh -c 'docker run --rm --volume "`pwd`:/data" pandoc/latex:2.17.1 "${0}" -o "output/html/${0%.md}.html"' {} \;
+find . -iname "index.md" -type f -exec sh -c 'docker run --rm --volume "`pwd`:/data" pandoc/latex:2.17.1 -s -t html5 -c github.css "${0}" -o "output/html/${0%.md}.html"' {} \;
+# copy base css file
+find output/html -type d | xargs -I {} cp github.css {}
 # copy image files
-find . -type f -not -path './output*' -name "*.svg" -or -name "*.jpg" -or -name "*.png" -or -name "*.gif" | xargs -I {} cp "{}" "output/html/{}"
+find . -type f -name "*.svg" -not -path './output/*' | xargs -I {} cp "{}" "output/html/{}"
 
 # change md alink to html
 find output/html -type f -name "*.html" | xargs sed -i '' -e "s/index.md/index.html/g"
