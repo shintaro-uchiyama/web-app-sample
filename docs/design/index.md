@@ -34,6 +34,28 @@ DDD(Domain-driven design) を用いた設計・開発を行います
 
 ![diagram](./index-1.svg)
 
+try mermaid
+
+```mermaid
+ classDiagram
+      class User{
+         <<Authentication>>
+         uuid
+         email
+         emailの重複は許可しない()
+      }
+      class Role{
+         <<Authentication>>
+         name
+      }
+      class Permission{
+         <<Authentication>>
+         name
+      }
+      User "1" -- "1" Role
+      Role "1" -- "1..*" Permission
+```
+
 ## Order Context
 
 今回は検討しない
