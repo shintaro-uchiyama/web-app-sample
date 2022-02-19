@@ -6,6 +6,7 @@ services:
       context: ./web
     volumes:
       - ./web:/usr/src/app 
+      # Volume trick
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
