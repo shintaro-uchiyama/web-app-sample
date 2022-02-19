@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBuilding,
@@ -14,9 +15,10 @@ function SideMenu() {
         </div>
         <nav className="mt-6">
           <div>
-            <a
-              className="w-full text-gray-800 dark:text-white flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start border-l-4 border-purple-500"
-              href="#"
+            <Link
+              className={`
+                w-full text-gray-800 dark:text-white flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start border-l-4 border-purple-500`}
+              to="/"
             >
               <span className="text-left">
                 <FontAwesomeIcon
@@ -26,10 +28,12 @@ function SideMenu() {
                 />
                 <span className="mx-4 text-sm font-normal">Home</span>
               </span>
-            </a>
-            <a
-              className="w-full text-gray-400 flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start hover:text-gray-800 border-l-4 border-transparent"
-              href="#"
+            </Link>
+            <Link
+              className="
+                w-full text-gray-400 flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start hover:text-gray-800 border-l-4 border-transparent
+              "
+              to="/companies"
             >
               <span className="text-left">
                 <FontAwesomeIcon
@@ -39,10 +43,10 @@ function SideMenu() {
                 />
               </span>
               <span className="mx-4 text-sm font-normal">Company</span>
-            </a>
-            <a
+            </Link>
+            <Link
               className="w-full text-gray-400 flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start hover:text-gray-800 border-l-4 border-transparent"
-              href="#"
+              to="/schedule"
             >
               <span className="text-left">
                 <FontAwesomeIcon
@@ -52,7 +56,7 @@ function SideMenu() {
                 />
               </span>
               <span className="mx-4 text-sm font-normal">Schedule</span>
-            </a>
+            </Link>
           </div>
         </nav>
       </div>

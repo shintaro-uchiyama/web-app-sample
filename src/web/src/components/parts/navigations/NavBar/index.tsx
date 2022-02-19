@@ -1,6 +1,6 @@
 function NavBar() {
   return (
-    <header className="w-full h-16 z-40 flex items-center justify-between">
+    <header className="w-full h-12 z-40 flex items-center justify-between">
       <div className="block lg:hidden ml-6">
         <button className="flex p-2 items-center rounded-full bg-white shadow text-gray-500 text-md">
           <svg
