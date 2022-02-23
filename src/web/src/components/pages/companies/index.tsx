@@ -1,10 +1,8 @@
-import React, { DragEvent, useState, useRef } from "react";
+import { faCircleChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAnglesUp,
-  faCircleChevronUp,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { DragEvent } from "react";
 import useVerticalResizer from "../../../hooks/useVerticalResizer";
+import { FilterTable } from "../../parts/tables";
 
 function Companies() {
   const { refs, resize } = useVerticalResizer();
@@ -14,8 +12,8 @@ function Companies() {
   };
   return (
     <div className="h-screen">
-      <div ref={refs.upperDivRef} className="bg-amber-200 h-64">
-        リサイズエリア２
+      <div ref={refs.upperDivRef} className="h-64 overflow-y-auto">
+        <FilterTable />
       </div>
       <div
         ref={refs.resizerDivRef}
@@ -31,7 +29,7 @@ function Companies() {
           className="absolute top-[-4px] z-10"
         />
       </div>
-      <div ref={refs.lowerDivRef} className={`bg-red-50 h-full !mt-0`}>
+      <div ref={refs.lowerDivRef} className={`h-full !mt-0`}>
         リサイズエリア３
       </div>
     </div>
