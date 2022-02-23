@@ -13,8 +13,8 @@ function Companies() {
     resize(e.pageY);
   };
   return (
-    <>
-      <div ref={refs.upperDivRef} className="bg-amber-200">
+    <div className="h-screen">
+      <div ref={refs.upperDivRef} className="bg-amber-200 h-64">
         リサイズエリア２
       </div>
       <div
@@ -31,10 +31,10 @@ function Companies() {
           className="absolute top-[-4px] z-10"
         />
       </div>
-      <div ref={refs.lowerDivRef} className={`bg-red-50 !mt-0`}>
+      <div ref={refs.lowerDivRef} className={`bg-red-50 h-full !mt-0`}>
         リサイズエリア３
       </div>
-    </>
+    </div>
   );
 }
 
