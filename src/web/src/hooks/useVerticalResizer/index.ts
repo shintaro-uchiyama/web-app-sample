@@ -32,18 +32,7 @@ const useVerticalResizer = (): IUseVerticalResizer => {
     const el2height: number = y - adjust;
     upperDiv.style.height = el2height + "px";
 
-    const el3height: number =
-      el2height +
-      2 *
-        (parseInt(upperDiv.style.border) ||
-          0 + parseInt(upperDiv.style.padding) ||
-          0) - // upperDiv
-      resizerDiv.offsetHeight - // resizerDiv
-      2 *
-        (parseInt(lowerDiv.style.border) ||
-          0 + parseInt(lowerDiv.style.padding) ||
-          0); // lowerDiv
-    lowerDiv.style.height = el3height + "px";
+    lowerDiv.style.height = "100%";
   };
   return {
     refs: { upperDivRef, lowerDivRef, resizerDivRef },
