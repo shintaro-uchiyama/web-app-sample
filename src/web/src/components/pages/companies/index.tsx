@@ -17,21 +17,19 @@ function Companies() {
       </div>
       <div
         ref={refs.resizerDivRef}
-        draggable="true"
         className="relative cursor-pointer !mt-0"
         onDrag={onDragHandler}
+        draggable="false"
       >
         <div className="bg-gray-300 h-1 z-0"></div>
         <FontAwesomeIcon
           icon={faCircleChevronUp}
           fill="currentColor"
-          size="xs"
+          size="sm"
           className="absolute top-[-4px] z-10"
         />
       </div>
-      <div ref={refs.lowerDivRef} className={`h-full !mt-0`}>
-        リサイズエリア３
-      </div>
+      <div ref={refs.lowerDivRef} className={`h-full !mt-0`}></div>
     </div>
   );
 }

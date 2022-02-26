@@ -1,4 +1,68 @@
+import React, { useState } from "react";
+
 function FilterTable() {
+  const [rowID, setRowID] = useState("");
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLTableRowElement>,
+    id: string
+  ) => {
+    event.stopPropagation();
+    switch (event.key) {
+      case "ArrowUp":
+        console.log("ArrowUp");
+        console.log("id: ", id);
+        event.preventDefault();
+        if (rowID === "1") return;
+        setRowID((prevRowID) => String(Number(prevRowID) - 1));
+        break;
+      case "ArrowDown":
+        console.log("ArrowDown");
+        console.log("id: ", id);
+        event.preventDefault();
+        if (rowID === "4") return;
+        setRowID((prevRowID) => String(Number(prevRowID) + 1));
+        break;
+      default:
+        break;
+    }
+  };
+  const handleClick = (
+    event: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
+    id: string
+  ) => {
+    event.preventDefault();
+    setRowID(id);
+  };
+  const dummyCompanyRows = [
+    {
+      id: "1",
+      user: "test name 1",
+      role: "Admin",
+      createdAt: "12/09/2020",
+      status: "active",
+    },
+    {
+      id: "2",
+      user: "test name 2",
+      role: "Admin",
+      createdAt: "12/09/2020",
+      status: "active",
+    },
+    {
+      id: "3",
+      user: "test name 3",
+      role: "Admin",
+      createdAt: "12/09/2020",
+      status: "active",
+    },
+    {
+      id: "4",
+      user: "test name 4",
+      role: "Admin",
+      createdAt: "12/09/2020",
+      status: "active",
+    },
+  ];
   return (
     <div className="container mx-auto px-4 sm:px-8 max-w-full">
       <div className="py-8">
@@ -27,7 +91,12 @@ function FilterTable() {
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal">
               <thead>
-                <tr>
+                <tr
+                  id="1"
+                  onKeyDown={(e) => handleKeyDown(e, "1")}
+                  className={rowID === "1" ? "bg-orange-200" : ""}
+                  tabIndex={0}
+                >
                   <th
                     scope="col"
                     className="px-5 py-1 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal"
@@ -59,144 +128,53 @@ function FilterTable() {
                 </tr>
               </thead>
               <tbody className="text-left">
-                <tr>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <div className="flex items-center">
+                {dummyCompanyRows.map((row) => (
+                  <tr
+                    id={row.id}
+                    key={row.id}
+                    onKeyDown={(e) => handleKeyDown(e, row.id)}
+                    onClick={(e) => handleClick(e, row.id)}
+                    className={`focus:outline-none ${
+                      rowID === row.id ? "bg-sky-50" : "bg-white"
+                    }`}
+                    tabIndex={0}
+                  >
+                    <td className="px-5 py-2 border-b border-gray-200 text-sm">
+                      <div className="flex items-center">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {row.user}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-5 py-2 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        Jean marc
+                        {row.role}
                       </p>
-                    </div>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">Admin</p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      12/09/2020
-                    </p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                      ></span>
-                      <span className="relative">active</span>
-                    </span>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <a
-                      href="#"
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <div className="flex items-center">
+                    </td>
+                    <td className="px-5 py-2 border-b border-gray-200 text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        Marcus coco
+                        {row.createdAt}
                       </p>
-                    </div>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">Designer</p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      01/10/2012
-                    </p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                      ></span>
-                      <span className="relative">active</span>
-                    </span>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <a
-                      href="#"
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <div className="flex items-center">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Ecric marc
-                      </p>
-                    </div>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      Developer
-                    </p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      02/10/2018
-                    </p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                      ></span>
-                      <span className="relative">active</span>
-                    </span>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <a
-                      href="#"
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <div className="flex items-center">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Julien Huger
-                      </p>
-                    </div>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">User</p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      23/09/2010
-                    </p>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                      ></span>
-                      <span className="relative">active</span>
-                    </span>
-                  </td>
-                  <td className="px-5 py-2 border-b border-gray-200 bg-white text-sm">
-                    <a
-                      href="#"
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      Edit
-                    </a>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="px-5 py-2 border-b border-gray-200 text-sm">
+                      <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                        ></span>
+                        <span className="relative">{row.status}</span>
+                      </span>
+                    </td>
+                    <td className="px-5 py-2 border-b border-gray-200 text-sm">
+                      <a
+                        href="#"
+                        className="text-indigo-600 hover:text-indigo-900"
+                      >
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <div className="px-5 bg-white py-5 flex flex-col xs:flex-row items-center xs:justify-between">
