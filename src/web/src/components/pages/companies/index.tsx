@@ -10,6 +10,10 @@ function Companies() {
     if (!e.pageY) return;
     resize(e.pageY);
   };
+  // set empty gif to avoid unexpected icon during drag and drop in chrome
+  const blankImg = new Image();
+  blankImg.src =
+    "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
   return (
     <div className="h-screen">
       <div ref={refs.upperDivRef} className="h-64 overflow-y-auto">
@@ -17,16 +21,19 @@ function Companies() {
       </div>
       <div
         ref={refs.resizerDivRef}
-        className="relative cursor-pointer !mt-0"
+        className="relative !mt-0 cursor-row-resize"
         onDrag={onDragHandler}
-        draggable="false"
+        onDragStart={(e) => {
+          e.dataTransfer.setDragImage(blankImg, 0, 0);
+        }}
+        draggable="true"
       >
-        <div className="bg-gray-300 h-1 z-0"></div>
+        <div className="bg-gray-300 h-2 z-0"></div>
         <FontAwesomeIcon
           icon={faCircleChevronUp}
           fill="currentColor"
           size="sm"
-          className="absolute top-[-4px] z-10"
+          className="absolute top-[-2px] z-10"
         />
       </div>
       <div ref={refs.lowerDivRef} className={`h-full !mt-0`}></div>
