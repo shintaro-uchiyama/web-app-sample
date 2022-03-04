@@ -1,23 +1,23 @@
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBuilding,
-  faHome,
   faCalendar,
+  faHome,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 
 function SideMenu() {
   return (
     <div className="h-screen hidden lg:block shadow-lg relative w-60">
-      <div className="bg-white h-full dark:bg-gray-700">
+      <div className="bg-white h-full ">
         <div className="flex items-center justify-start pt-6 ml-8">
-          <p className="font-bold dark:text-white text-xl">Ucwork</p>
+          <p className="font-bold text-xl">Ucwork</p>
         </div>
         <nav className="mt-6">
           <div>
             <Link
               className={`
-                w-full text-gray-800 dark:text-white flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start border-l-4 border-purple-500`}
+                w-full text-gray-800 flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start border-l-4 border-purple-500`}
               to="/"
             >
               <span className="text-left">
