@@ -21,19 +21,20 @@ function Companies() {
       </div>
       <div
         ref={refs.resizerDivRef}
-        className="relative !mt-0 cursor-row-resize"
+        className="relative !mt-0 cursor-grab active:cursor-grabbing"
         onDrag={onDragHandler}
         onDragStart={(e) => {
           e.dataTransfer.setDragImage(blankImg, 0, 0);
         }}
+        onMouseMove={(e) => {}}
         draggable="true"
       >
-        <div className="bg-gray-300 h-2 z-0"></div>
+        <div className="bg-gray-300 h-1 z-0"></div>
         <FontAwesomeIcon
           icon={faCircleChevronUp}
           fill="currentColor"
           size="sm"
-          className="absolute top-[-2px] z-10"
+          className="absolute top-[-4px] z-10"
         />
       </div>
       <div ref={refs.lowerDivRef} className={`h-full !mt-0`}></div>
