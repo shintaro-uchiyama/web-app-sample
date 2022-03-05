@@ -6,7 +6,16 @@ services:
       context: ./web
     volumes:
       - ./web:/usr/src/app 
-      # Volume trick
+      # use node_modules in container
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
+  sales:
+    container_name: sales
+    build:
+      context: ./sales
+    volumes:
+      - ./sales:/app 
+    ports:
+      - "8080:8080"
+    tty: true
