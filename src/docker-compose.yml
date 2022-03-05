@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  web:
+    container_name: web
+    build:
+      context: ./web
+    volumes:
+      - ./web:/usr/src/app 
+      # Volume trick
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"

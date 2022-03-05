@@ -7,7 +7,7 @@
 ## ブラウザ
 
 main branch に push すると  
-以下 GitHub Pages に反映されます
+以下 GitHub Pages に反映されます  
 https://shintaro-uchiyama.github.io/web-app-sample/
 
 ## 静的ファイルの出力
