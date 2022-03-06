@@ -19,3 +19,29 @@ services:
     ports:
       - "8080:8080"
     tty: true
+  sales-db:
+    image: postgres:14.2
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: J3fYk*u~
+      TZ: "Asia/Tokyo"
+    ports:
+      - 5432:5432
+    volumes:
+      - sales-db:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4:6.5
+    restart: always
+    ports:
+      - 81:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: Df8Bj(~g
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - sales-db
+volumes:
+  sales-db:
+  pgadmin:
