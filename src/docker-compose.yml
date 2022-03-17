@@ -24,6 +24,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
+      POSTGRES_DB: tenant1
       POSTGRES_PASSWORD: J3fYk*u~
       TZ: "Asia/Tokyo"
     ports:
