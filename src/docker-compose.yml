@@ -21,6 +21,7 @@ services:
     tty: true
   sales-db:
     image: postgres:14.2
+    container_name: sales-db
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -33,6 +34,7 @@ services:
       - sales-db:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4:6.5
+    container_name: pgadmin
     restart: always
     ports:
       - 81:80
