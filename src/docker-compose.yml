@@ -26,7 +26,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: tenant1
-      POSTGRES_PASSWORD: J3fYk*u~
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
       TZ: "Asia/Tokyo"
     ports:
       - 5432:5432
@@ -40,7 +40,7 @@ services:
       - 81:80
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
-      PGADMIN_DEFAULT_PASSWORD: Df8Bj(~g
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?err}
     volumes:
       - pgadmin:/var/lib/pgadmin
     depends_on:
