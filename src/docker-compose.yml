@@ -6,7 +6,45 @@ services:
       context: ./web
     volumes:
       - ./web:/usr/src/app 
-      # Volume trick
+      # use node_modules in container
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
+  sales:
+    container_name: sales
+    build:
+      context: ./sales
+    volumes:
+      - ./sales:/app 
+    ports:
+      - "8080:8080"
+    tty: true
+  sales-db:
+    image: postgres:14.2
+    container_name: sales-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${WEBAPP_POSTGRES_USER:?err}
+      POSTGRES_DB: ${WEBAPP_POSTGRES_DB:?err}
+      POSTGRES_PASSWORD: ${WEBAPP_POSTGRES_PASSWORD:?err}
+      TZ: "Asia/Tokyo"
+    ports:
+      - 5432:5432
+    volumes:
+      - sales-db:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4:6.7
+    container_name: pgadmin
+    restart: always
+    ports:
+      - 81:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: ${WEBAPP_PGADMIN_DEFAULT_PASSWORD:?err}
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - sales-db
+volumes:
+  sales-db:
+  pgadmin:
