@@ -1,9 +1,11 @@
+SHELL=/bin/zsh
 .PHONY: setup
 setup:
-	sh ./scripts/generate-local-env.sh
+	zsh ./scripts/generate-local-env.sh
 .PHONY: init
 init:
 	make setup
+	source ~/.zshenv
 	docker compose up -d --build
 .PHONY: up
 up:

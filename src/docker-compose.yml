@@ -24,23 +24,23 @@ services:
     container_name: sales-db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: tenant1
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
+      POSTGRES_USER: ${WEBAPP_POSTGRES_USER:?err}
+      POSTGRES_DB: ${WEBAPP_POSTGRES_DB:?err}
+      POSTGRES_PASSWORD: ${WEBAPP_POSTGRES_PASSWORD:?err}
       TZ: "Asia/Tokyo"
     ports:
       - 5432:5432
     volumes:
       - sales-db:/var/lib/postgresql/data
   pgadmin:
-    image: dpage/pgadmin4:6.5
+    image: dpage/pgadmin4:6.7
     container_name: pgadmin
     restart: always
     ports:
       - 81:80
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?err}
+      PGADMIN_DEFAULT_PASSWORD: ${WEBAPP_PGADMIN_DEFAULT_PASSWORD:?err}
     volumes:
       - pgadmin:/var/lib/pgadmin
     depends_on:
