@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
@@ -12,7 +13,12 @@ func main() {
 	fmt.Println("Hello golang from docker!")
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
-		dsn := "host=sales-db user=postgres password=J3fYk*u~ dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Tokyo"
+		dsn := fmt.Sprintf(
+			"host=sales-db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Tokyo",
+			os.Getenv("POSTGRES_USER"),
+			os.Getenv("POSTGRES_PASSWORD"),
+			os.Getenv("POSTGRES_DB"),
+		)
 		_, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			c.JSON(500, gin.H{
