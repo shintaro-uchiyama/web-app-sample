@@ -56,6 +56,15 @@ services:
       - 82:80
     volumes:
       - ./sales/cmd/db-document/output:/usr/share/nginx/html
+  api-document:
+    image: redocly/redoc:v2.0.0-rc.59
+    container_name: api-ducument
+    ports:
+      - 83:80
+    volumes:
+      - ./sales/cmd/api-document/openapi.yml:/usr/share/nginx/html/openapi.yml
+    environment:
+      SPEC_URL: openapi.yml
 volumes:
   sales-db:
   pgadmin:
