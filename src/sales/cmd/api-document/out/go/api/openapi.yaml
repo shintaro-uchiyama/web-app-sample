@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  description: |
+    This API is just example.
+    Basic CRUD endpoints
+  title: A minimal OpenAPI document
+  version: 0.1.0
+servers:
+- description: Local server
+  url: http://localhost:8080
+tags:
+- description: Identity microservice
+  name: identity
+paths:
+  /users:
+    get:
+      description: Returns an array of User model
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                example:
+                - id: 1
+                  name: John Doe
+                - id: 2
+                  name: Jane Doe
+                items:
+                  $ref: '#/components/schemas/User'
+                type: array
+          description: A JSON array of User model
+      summary: Get all users.
+      tags:
+      - identity
+components:
+  schemas:
+    User:
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+      type: object

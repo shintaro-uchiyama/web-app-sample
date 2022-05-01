@@ -11,7 +11,8 @@
     "bradlc.vscode-tailwindcss",
     "csstools.postcss",
     "bungcip.better-toml",
-    "golang.go"
+    "golang.go",
+    "42Crunch.vscode-openapi"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": []

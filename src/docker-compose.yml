@@ -18,6 +18,10 @@ services:
       - ./sales:/app 
     ports:
       - "8080:8080"
+    environment:
+      POSTGRES_USER: ${WEBAPP_POSTGRES_USER:?err}
+      POSTGRES_DB: ${WEBAPP_POSTGRES_DB:?err}
+      POSTGRES_PASSWORD: ${WEBAPP_POSTGRES_PASSWORD:?err}
     tty: true
   sales-db:
     image: postgres:14.2
@@ -45,6 +49,22 @@ services:
       - pgadmin:/var/lib/pgadmin
     depends_on:
       - sales-db
+  db-document:
+    image: nginx:1.21.6-alpine
+    container_name: db-document
+    ports:
+      - 82:80
+    volumes:
+      - ./sales/cmd/db-document/output:/usr/share/nginx/html
+  api-document:
+    image: redocly/redoc:v2.0.0-rc.59
+    container_name: api-ducument
+    ports:
+      - 83:80
+    volumes:
+      - ./sales/cmd/api-document/openapi.yml:/usr/share/nginx/html/openapi.yml
+    environment:
+      SPEC_URL: openapi.yml
 volumes:
   sales-db:
   pgadmin:
