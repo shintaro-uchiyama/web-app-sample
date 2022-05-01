@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -11,15 +11,15 @@ export const useCanvas = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas !== null) {
-      const context = canvas.getContext("2d");
-      if (context !== null) {
-        draw(context);
-      }
-    }
+    if (canvas === null) return;
+
+    const ctx = canvas.getContext("2d");
+    if (ctx === null) return;
+
+    draw(ctx);
   }, [draw]);
 
   return {
-      canvasRef
-  }
-}
+    canvasRef,
+  };
+};
