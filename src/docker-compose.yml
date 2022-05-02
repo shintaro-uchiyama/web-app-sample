@@ -23,6 +23,15 @@ services:
       POSTGRES_DB: ${WEBAPP_POSTGRES_DB:?err}
       POSTGRES_PASSWORD: ${WEBAPP_POSTGRES_PASSWORD:?err}
     tty: true
+  draw:
+    container_name: draw
+    build:
+      context: ./draw
+    volumes:
+      - ./draw:/app 
+    ports:
+      - "8081:8080"
+    tty: true
   sales-db:
     image: postgres:14.2
     container_name: sales-db
