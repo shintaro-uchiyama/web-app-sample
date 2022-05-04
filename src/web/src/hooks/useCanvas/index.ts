@@ -5,8 +5,30 @@ interface CanvasCoordinate {
   y: number;
 }
 
+interface PaintedCanvasCoordinate {
+  originalCanvasCordinate: CanvasCoordinate;
+  newCanvasCordinate: CanvasCoordinate;
+}
+
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const socketRef = useRef<WebSocket>();
+
+  useEffect(() => {
+    socketRef.current = new WebSocket("ws://localhost:8081/ws/");
+
+    socketRef.current.onmessage = (event) => {
+      const { originalCanvasCordinate, newCanvasCordinate } = JSON.parse(
+        event.data
+      ) as PaintedCanvasCoordinate;
+      drawLine(originalCanvasCordinate, newCanvasCordinate);
+    };
+
+    return () => {
+      socketRef.current?.close();
+    };
+  }, []);
 
   const [isPainting, setIsPainting] = useState(false);
   const [canvasCoordinate, setCanvasCoordinate] = useState<
@@ -74,10 +96,17 @@ export const useCanvas = () => {
   const paint = useCallback(
     (event: MouseEvent) => {
       if (isPainting) {
-        const newMousePosition = getCanvasCoordinate(event);
-        if (canvasCoordinate && newMousePosition) {
-          drawLine(canvasCoordinate, newMousePosition);
-          setCanvasCoordinate(newMousePosition);
+        const newCanvasCordinate = getCanvasCoordinate(event);
+        if (canvasCoordinate && newCanvasCordinate) {
+          drawLine(canvasCoordinate, newCanvasCordinate);
+          setCanvasCoordinate(newCanvasCordinate);
+          if (!socketRef.current) return;
+
+          const paintedCanvasCoordinate: PaintedCanvasCoordinate = {
+            originalCanvasCordinate: canvasCoordinate,
+            newCanvasCordinate,
+          };
+          socketRef.current.send(JSON.stringify(paintedCanvasCoordinate));
         }
       }
     },
