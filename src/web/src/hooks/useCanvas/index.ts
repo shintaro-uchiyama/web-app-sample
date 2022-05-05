@@ -19,10 +19,13 @@ export const useCanvas = () => {
     socketRef.current = new WebSocket("ws://localhost:8081/ws/");
 
     socketRef.current.onmessage = (event) => {
-      const { originalCanvasCordinate, newCanvasCordinate } = JSON.parse(
-        event.data
-      ) as PaintedCanvasCoordinate;
-      drawLine(originalCanvasCordinate, newCanvasCordinate);
+      var paintedCanvasCoordinates = event.data.split("\n");
+      for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
+        const { originalCanvasCordinate, newCanvasCordinate } = JSON.parse(
+          paintedCanvasCoordinates[i]
+        ) as PaintedCanvasCoordinate;
+        drawLine(originalCanvasCordinate, newCanvasCordinate);
+      }
     };
 
     return () => {
