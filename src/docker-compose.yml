@@ -32,6 +32,14 @@ services:
     ports:
       - "8081:8080"
     tty: true
+    depends_on:
+      - dynamodb
+    links:
+      - "dynamodb"
+    environment:
+      AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
+      AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
+      REGION: 'ap-northeast-1'
   sales-db:
     image: postgres:14.2
     container_name: sales-db
@@ -74,6 +82,16 @@ services:
       - ./sales/cmd/api-document/openapi.yml:/usr/share/nginx/html/openapi.yml
     environment:
       SPEC_URL: openapi.yml
+  dynamodb:
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath ./data
+    image: amazon/dynamodb-local:1.18.0
+    container_name: dynamodb
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodb:/home/dynamodblocal/data
+    working_dir: /home/dynamodblocal
 volumes:
   sales-db:
   pgadmin:
+  dynamodb:
