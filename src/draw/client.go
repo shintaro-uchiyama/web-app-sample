@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/gorilla/websocket"
 )
@@ -36,11 +38,28 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type Client struct {
-	hub  *Hub
-	conn *websocket.Conn
-	send chan []byte
-}
+type (
+	Client struct {
+		hub      *Hub
+		conn     *websocket.Conn
+		dynamoDB *dynamodb.Client
+		send     chan []byte
+	}
+	CanvasCoordinate struct {
+		X int `json:"x"`
+		Y int `json:"y"`
+	}
+	PaintedCanvasCoordinate struct {
+		OriginalCanvasCordinate CanvasCoordinate `json:"originalCanvasCordinate"`
+		NewCanvasCordinate      CanvasCoordinate `json:"newCanvasCordinate"`
+	}
+	Item struct {
+		Year   int
+		Title  string
+		Plot   string
+		Rating float64
+	}
+)
 
 func (c *Client) readPump() {
 	defer func() {
@@ -59,6 +78,30 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		var paintedCanvasCoordinate PaintedCanvasCoordinate
+		json.Unmarshal(message, &paintedCanvasCoordinate)
+
+		fmt.Println("---")
+		fmt.Println(fmt.Printf("paintedCanvasCoordinate: %+v", paintedCanvasCoordinate))
+		item := Item{
+			Year:   2015,
+			Title:  "The Big New Movie",
+			Plot:   "Nothing happens at all.",
+			Rating: 0.0,
+		}
+
+		av, err := attributevalue.MarshalMap(item)
+		if err != nil {
+			log.Fatalf("Got error marshalling new movie item: %s", err)
+		}
+		if _, err := c.dynamoDB.PutItem(context.Background(), &dynamodb.PutItemInput{
+			// TODO: get dynamodb table name per tenant
+			TableName: aws.String("tenant1"),
+			Item:      av,
+		}); err != nil {
+			log.Fatalf("failed to put item, %v", err)
+		}
+
 		c.hub.broadcast <- message
 	}
 }
@@ -103,6 +146,12 @@ func (c *Client) writePump() {
 }
 
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(os.Getenv("REGION")), config.WithEndpointResolver(aws.EndpointResolverFunc(
 		func(service, region string) (aws.Endpoint, error) {
 			return aws.Endpoint{URL: os.Getenv("DYNAMO_ENDPOINT")}, nil
@@ -111,25 +160,11 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
 
-	svc := dynamodb.NewFromConfig(cfg)
-
-	resp, err := svc.ListTables(context.TODO(), &dynamodb.ListTablesInput{
-		Limit: aws.Int32(5),
-	})
-	if err != nil {
-		log.Fatalf("failed to list tables, %v", err)
+	client := &Client{
+		hub: hub, conn: conn,
+		dynamoDB: dynamodb.NewFromConfig(cfg),
+		send:     make(chan []byte, 256),
 	}
-
-	for _, tableName := range resp.TableNames {
-		fmt.Println(tableName)
-	}
-
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
 
 	go client.writePump()
