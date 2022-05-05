@@ -2,10 +2,16 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/gorilla/websocket"
 )
 
@@ -97,6 +103,27 @@ func (c *Client) writePump() {
 }
 
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(os.Getenv("REGION")), config.WithEndpointResolver(aws.EndpointResolverFunc(
+		func(service, region string) (aws.Endpoint, error) {
+			return aws.Endpoint{URL: os.Getenv("DYNAMO_ENDPOINT")}, nil
+		})))
+	if err != nil {
+		log.Fatalf("unable to load SDK config, %v", err)
+	}
+
+	svc := dynamodb.NewFromConfig(cfg)
+
+	resp, err := svc.ListTables(context.TODO(), &dynamodb.ListTablesInput{
+		Limit: aws.Int32(5),
+	})
+	if err != nil {
+		log.Fatalf("failed to list tables, %v", err)
+	}
+
+	for _, tableName := range resp.TableNames {
+		fmt.Println(tableName)
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
