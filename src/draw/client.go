@@ -102,7 +102,7 @@ func (c *Client) readPump() {
 		tableName := "tenant1"
 		item := PaintedCanvasCoordinates{
 			TenantUUID:              tenantUUID,
-			SortKey:                 fmt.Sprintf("draw#%s#%s", targetUUID, time.Now().Format(time.RFC3339Nano)),
+			SortKey:                 fmt.Sprintf("draw#%s#%s#%s", targetUUID, c.userUUID.String(), time.Now().Format(time.RFC3339Nano)),
 			PaintedCanvasCoordinate: paintedCanvasCoordinate,
 			UserUUID:                c.userUUID.String(),
 			HexColor:                c.hexColor,
@@ -188,6 +188,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
+	color := r.URL.Query().Get("color")
 
 	dynamoDBClient := dynamodb.NewFromConfig(cfg)
 	client := &Client{
@@ -195,7 +196,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		dynamoDB: dynamoDBClient,
 		send:     make(chan []byte, 256),
 		userUUID: uuid.New(),
-		hexColor: GetRandomColorInHex(),
+		hexColor: color,
 	}
 	client.hub.register <- client
 
@@ -240,18 +241,25 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	items := []PaintedCanvasCoordinates{}
 
-	err = attributevalue.UnmarshalListOfMaps(resp.Items, &items)
-	if err != nil {
+	if err = attributevalue.UnmarshalListOfMaps(resp.Items, &items); err != nil {
 		panic(fmt.Sprintf("failed to unmarshal Dynamodb Scan Items, %v", err))
 	}
 
-	byteItems, err := json.Marshal(CanvasResponse{
-		Type:                     "Stored",
-		PaintedCanvasCoordinates: items,
-	})
-	if err != nil {
-		fmt.Println(err.Error())
-		return
+	draws := make(map[string][]PaintedCanvasCoordinates)
+	for _, v := range items {
+		draws[v.HexColor] = append(draws[v.HexColor], v)
 	}
-	conn.WriteMessage(websocket.TextMessage, byteItems)
+
+	for i, v := range draws {
+		fmt.Println(i)
+		byteItems, err := json.Marshal(CanvasResponse{
+			Type:                     "Stored",
+			PaintedCanvasCoordinates: v,
+		})
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		conn.WriteMessage(websocket.TextMessage, byteItems)
+	}
 }

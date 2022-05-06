@@ -28,35 +28,103 @@ export const useCanvas = () => {
 
   const socketRef = useRef<WebSocket>();
 
+  var drawColor: string;
+
+  const storedColor = sessionStorage.getItem("drawColor");
+  if (!storedColor) {
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    sessionStorage.setItem("drawColor", randomColor);
+    drawColor = randomColor;
+  } else {
+    drawColor = storedColor as string;
+  }
+
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:8081/ws/");
+    socketRef.current = new WebSocket(
+      `ws://localhost:8081/ws/?color=${encodeURIComponent(drawColor)}`
+    );
 
     socketRef.current.onmessage = (event) => {
+      console.log("event: ", event);
+      if (!canvasRef.current) {
+        return;
+      }
+      const canvas = canvasRef.current;
+      let context = canvas.getContext("2d");
+      if (!context) return;
+
       var paintedCanvasCoordinates = event.data.split("\n");
       for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
         const tmp = JSON.parse(paintedCanvasCoordinates[i]);
         const { Type, PaintedCanvasCoordinate, PaintedCanvasCoordinates } =
           tmp as CanvasResponse;
         if (Type === "Stored") {
-          if (!canvasRef.current) {
-            return;
-          }
-          const canvas = canvasRef.current;
-          const context = canvas.getContext("2d");
-          if (!context) return;
+          /*
+          PaintedCanvasCoordinates.sort((a, b) => {
+            const hexColorA = a.hexColor.toUpperCase();
+            const hexColorB = b.hexColor.toUpperCase();
+            if (hexColorA < hexColorB) {
+              return -1;
+            }
+            if (hexColorA > hexColorB) {
+              return 1;
+            }
+
+            return 0;
+          });
+          */
+
+          // let prevHexColor = "";
           context.lineJoin = "round";
           context.lineWidth = 1;
           context.beginPath();
-
           PaintedCanvasCoordinates.forEach((t) => {
+            if (!context) return;
             context.strokeStyle = t.hexColor;
             context.moveTo(
               t.originalCanvasCordinate.x,
               t.originalCanvasCordinate.y
             );
             context.lineTo(t.newCanvasCordinate.x, t.newCanvasCordinate.y);
+            /*
+            if (prevHexColor === "") {
+              console.log("start");
+              console.log("color", t.hexColor);
+              context = canvas.getContext("2d");
+              if (context) {
+                context.strokeStyle = t.hexColor;
+                context.lineJoin = "round";
+                context.lineWidth = 1;
+                context.beginPath();
+              }
+            } else if (prevHexColor !== t.hexColor) {
+              console.log("color change");
+              console.log("color", t.hexColor);
+              if (context) {
+                context.closePath();
+                context.stroke();
+              }
+
+              context = canvas.getContext("2d");
+              if (context) {
+                context.strokeStyle = t.hexColor;
+                context.lineJoin = "round";
+                context.lineWidth = 1;
+                context.beginPath();
+              }
+            }
+            if (context) {
+              context.moveTo(
+                t.originalCanvasCordinate.x,
+                t.originalCanvasCordinate.y
+              );
+              context.lineTo(t.newCanvasCordinate.x, t.newCanvasCordinate.y);
+            }
+            prevHexColor = t.hexColor;
+            */
           });
 
+          console.log("final");
           context.closePath();
           context.stroke();
         } else if (Type === "Realtime") {
@@ -117,6 +185,7 @@ export const useCanvas = () => {
     newCanvasCordinate: CanvasCoordinate,
     hexColor: string
   ) => {
+    console.log("passs");
     if (!canvasRef.current) {
       return;
     }
@@ -141,7 +210,7 @@ export const useCanvas = () => {
       if (isPainting) {
         const newCanvasCordinate = getCanvasCoordinate(event);
         if (canvasCoordinate && newCanvasCordinate) {
-          drawLine(canvasCoordinate, newCanvasCordinate, "red");
+          drawLine(canvasCoordinate, newCanvasCordinate, drawColor);
           setCanvasCoordinate(newCanvasCordinate);
           if (!socketRef.current) return;
 
