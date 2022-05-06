@@ -9,6 +9,12 @@ interface PaintedCanvasCoordinate {
   originalCanvasCordinate: CanvasCoordinate;
   newCanvasCordinate: CanvasCoordinate;
 }
+interface PaintedCanvasCoordinate2 {
+  tenantUUID: string;
+  sortKey: string;
+  originalCanvasCordinate: CanvasCoordinate;
+  newCanvasCordinate: CanvasCoordinate;
+}
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,11 +26,39 @@ export const useCanvas = () => {
 
     socketRef.current.onmessage = (event) => {
       var paintedCanvasCoordinates = event.data.split("\n");
-      for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
-        const { originalCanvasCordinate, newCanvasCordinate } = JSON.parse(
-          paintedCanvasCoordinates[i]
-        ) as PaintedCanvasCoordinate;
-        drawLine(originalCanvasCordinate, newCanvasCordinate);
+      if (paintedCanvasCoordinates.length > 1) {
+        for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
+          const tmp = JSON.parse(paintedCanvasCoordinates[i]);
+          console.log("parsed event: ", tmp);
+          const { originalCanvasCordinate, newCanvasCordinate } =
+            tmp as PaintedCanvasCoordinate;
+          drawLine(originalCanvasCordinate, newCanvasCordinate);
+        }
+      } else {
+        if (!canvasRef.current) {
+          return;
+        }
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        if (!context) return;
+        context.strokeStyle = "red";
+        context.lineJoin = "round";
+        context.lineWidth = 1;
+        context.beginPath();
+
+        const tmp = JSON.parse(
+          paintedCanvasCoordinates[0]
+        ) as PaintedCanvasCoordinate2[];
+        tmp.forEach((t) => {
+          context.moveTo(
+            t.originalCanvasCordinate.x,
+            t.originalCanvasCordinate.y
+          );
+          context.lineTo(t.newCanvasCordinate.x, t.newCanvasCordinate.y);
+        });
+
+        context.closePath();
+        context.stroke();
       }
     };
 

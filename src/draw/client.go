@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/gorilla/websocket"
 )
@@ -22,6 +23,8 @@ const (
 	pongWait       = 60 * time.Second
 	pingPeriod     = (pongWait * 9) / 10
 	maxMessageSize = 512
+	tenantUUID     = "00000000-0000-0000-0000-000000000001"
+	targetUUID     = "00000000-0000-0000-0000-000000000002"
 )
 
 var (
@@ -58,6 +61,11 @@ type (
 		SortKey    string
 		PaintedCanvasCoordinate
 	}
+	DynamoDBScanAPI interface {
+		Scan(ctx context.Context,
+			params *dynamodb.ScanInput,
+			optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
+	}
 )
 
 func (c *Client) readPump() {
@@ -82,8 +90,6 @@ func (c *Client) readPump() {
 
 		// TODO: get target uuid from client request
 		tableName := "tenant1"
-		tenantUUID := "00000000-0000-0000-0000-000000000001"
-		targetUUID := "00000000-0000-0000-0000-000000000002"
 		item := PaintedCanvasCoordinates{
 			TenantUUID:              tenantUUID,
 			SortKey:                 fmt.Sprintf("draw#%s#%s", targetUUID, time.Now().Format(time.RFC3339Nano)),
@@ -144,6 +150,10 @@ func (c *Client) writePump() {
 	}
 }
 
+func GetItems(c context.Context, api DynamoDBScanAPI, input *dynamodb.ScanInput) (*dynamodb.ScanOutput, error) {
+	return api.Scan(c, input)
+}
+
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -159,13 +169,63 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
 
+	dynamoDBClient := dynamodb.NewFromConfig(cfg)
 	client := &Client{
 		hub: hub, conn: conn,
-		dynamoDB: dynamodb.NewFromConfig(cfg),
+		dynamoDB: dynamoDBClient,
 		send:     make(chan []byte, 256),
 	}
 	client.hub.register <- client
 
 	go client.writePump()
 	go client.readPump()
+
+	// Get items in that year.
+	filt1 := expression.Name("TenantUUID").Equal(expression.Value(tenantUUID))
+	// Get items with a rating above the minimum.
+	filt2 := expression.Name("SortKey").BeginsWith(fmt.Sprintf("draw#%s", targetUUID))
+
+	// Get back the title and rating (we know the year).
+	proj := expression.NamesList(
+		expression.Name("TenantUUID"),
+		expression.Name("SortKey"),
+		expression.Name("OriginalCanvasCordinate"),
+		expression.Name("NewCanvasCordinate"),
+	)
+
+	expr, err := expression.NewBuilder().WithFilter(filt1).WithFilter(filt2).WithProjection(proj).Build()
+	if err != nil {
+		fmt.Println("Got error building expression:")
+		fmt.Println(err.Error())
+		return
+	}
+
+	input := &dynamodb.ScanInput{
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+		ProjectionExpression:      expr.Projection(),
+		TableName:                 aws.String("tenant1"),
+	}
+
+	resp, err := GetItems(context.Background(), dynamoDBClient, input)
+	if err != nil {
+		fmt.Println("Got an error scanning the table:")
+		fmt.Println(err.Error())
+		return
+	}
+
+	items := []PaintedCanvasCoordinates{}
+
+	err = attributevalue.UnmarshalListOfMaps(resp.Items, &items)
+	if err != nil {
+		panic(fmt.Sprintf("failed to unmarshal Dynamodb Scan Items, %v", err))
+	}
+
+	byteItems, err := json.Marshal(items)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	conn.WriteMessage(websocket.TextMessage, byteItems)
 }
