@@ -61,6 +61,11 @@ type (
 		SortKey    string
 		PaintedCanvasCoordinate
 	}
+	CanvasResponse struct {
+		Type                     string
+		PaintedCanvasCoordinates []PaintedCanvasCoordinates
+		PaintedCanvasCoordinate  PaintedCanvasCoordinate
+	}
 	DynamoDBScanAPI interface {
 		Scan(ctx context.Context,
 			params *dynamodb.ScanInput,
@@ -107,7 +112,15 @@ func (c *Client) readPump() {
 			log.Fatalf("failed to put item, %v", err)
 		}
 
-		c.hub.broadcast <- message
+		byteMessage, err := json.Marshal(CanvasResponse{
+			Type:                    "Realtime",
+			PaintedCanvasCoordinate: paintedCanvasCoordinate,
+		})
+		if err != nil {
+			log.Fatalf("json mershal error: %s", err)
+		}
+
+		c.hub.broadcast <- byteMessage
 	}
 }
 
@@ -222,7 +235,10 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		panic(fmt.Sprintf("failed to unmarshal Dynamodb Scan Items, %v", err))
 	}
 
-	byteItems, err := json.Marshal(items)
+	byteItems, err := json.Marshal(CanvasResponse{
+		Type:                     "Stored",
+		PaintedCanvasCoordinates: items,
+	})
 	if err != nil {
 		fmt.Println(err.Error())
 		return

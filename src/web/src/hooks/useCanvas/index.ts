@@ -15,6 +15,11 @@ interface PaintedCanvasCoordinate2 {
   originalCanvasCordinate: CanvasCoordinate;
   newCanvasCordinate: CanvasCoordinate;
 }
+interface CanvasResponse {
+  Type: string;
+  PaintedCanvasCoordinates: PaintedCanvasCoordinate2[];
+  PaintedCanvasCoordinate: PaintedCanvasCoordinate;
+}
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,39 +31,37 @@ export const useCanvas = () => {
 
     socketRef.current.onmessage = (event) => {
       var paintedCanvasCoordinates = event.data.split("\n");
-      if (paintedCanvasCoordinates.length > 1) {
-        for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
-          const tmp = JSON.parse(paintedCanvasCoordinates[i]);
-          console.log("parsed event: ", tmp);
+      for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
+        const tmp = JSON.parse(paintedCanvasCoordinates[i]);
+        const { Type, PaintedCanvasCoordinate, PaintedCanvasCoordinates } =
+          tmp as CanvasResponse;
+        if (Type === "Stored") {
+          if (!canvasRef.current) {
+            return;
+          }
+          const canvas = canvasRef.current;
+          const context = canvas.getContext("2d");
+          if (!context) return;
+          context.strokeStyle = "red";
+          context.lineJoin = "round";
+          context.lineWidth = 1;
+          context.beginPath();
+
+          PaintedCanvasCoordinates.forEach((t) => {
+            context.moveTo(
+              t.originalCanvasCordinate.x,
+              t.originalCanvasCordinate.y
+            );
+            context.lineTo(t.newCanvasCordinate.x, t.newCanvasCordinate.y);
+          });
+
+          context.closePath();
+          context.stroke();
+        } else if (Type === "Realtime") {
           const { originalCanvasCordinate, newCanvasCordinate } =
-            tmp as PaintedCanvasCoordinate;
+            PaintedCanvasCoordinate;
           drawLine(originalCanvasCordinate, newCanvasCordinate);
         }
-      } else {
-        if (!canvasRef.current) {
-          return;
-        }
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-        if (!context) return;
-        context.strokeStyle = "red";
-        context.lineJoin = "round";
-        context.lineWidth = 1;
-        context.beginPath();
-
-        const tmp = JSON.parse(
-          paintedCanvasCoordinates[0]
-        ) as PaintedCanvasCoordinate2[];
-        tmp.forEach((t) => {
-          context.moveTo(
-            t.originalCanvasCordinate.x,
-            t.originalCanvasCordinate.y
-          );
-          context.lineTo(t.newCanvasCordinate.x, t.newCanvasCordinate.y);
-        });
-
-        context.closePath();
-        context.stroke();
       }
     };
 
