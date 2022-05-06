@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -47,6 +48,8 @@ type (
 		conn     *websocket.Conn
 		dynamoDB *dynamodb.Client
 		send     chan []byte
+		userUUID uuid.UUID
+		hexColor string
 	}
 	CanvasCoordinate struct {
 		X int `json:"x"`
@@ -60,11 +63,13 @@ type (
 		TenantUUID string
 		SortKey    string
 		PaintedCanvasCoordinate
+		UserUUID string
+		HexColor string `json:"hexColor"`
 	}
 	CanvasResponse struct {
 		Type                     string
 		PaintedCanvasCoordinates []PaintedCanvasCoordinates
-		PaintedCanvasCoordinate  PaintedCanvasCoordinate
+		PaintedCanvasCoordinate  PaintedCanvasCoordinates
 	}
 	DynamoDBScanAPI interface {
 		Scan(ctx context.Context,
@@ -99,6 +104,8 @@ func (c *Client) readPump() {
 			TenantUUID:              tenantUUID,
 			SortKey:                 fmt.Sprintf("draw#%s#%s", targetUUID, time.Now().Format(time.RFC3339Nano)),
 			PaintedCanvasCoordinate: paintedCanvasCoordinate,
+			UserUUID:                c.userUUID.String(),
+			HexColor:                c.hexColor,
 		}
 
 		av, err := attributevalue.MarshalMap(item)
@@ -114,7 +121,7 @@ func (c *Client) readPump() {
 
 		byteMessage, err := json.Marshal(CanvasResponse{
 			Type:                    "Realtime",
-			PaintedCanvasCoordinate: paintedCanvasCoordinate,
+			PaintedCanvasCoordinate: item,
 		})
 		if err != nil {
 			log.Fatalf("json mershal error: %s", err)
@@ -187,6 +194,8 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		hub: hub, conn: conn,
 		dynamoDB: dynamoDBClient,
 		send:     make(chan []byte, 256),
+		userUUID: uuid.New(),
+		hexColor: GetRandomColorInHex(),
 	}
 	client.hub.register <- client
 
@@ -204,6 +213,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		expression.Name("SortKey"),
 		expression.Name("OriginalCanvasCordinate"),
 		expression.Name("NewCanvasCordinate"),
+		expression.Name("HexColor"),
 	)
 
 	expr, err := expression.NewBuilder().WithFilter(filt1).WithFilter(filt2).WithProjection(proj).Build()

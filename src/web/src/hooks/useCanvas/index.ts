@@ -14,11 +14,13 @@ interface PaintedCanvasCoordinate2 {
   sortKey: string;
   originalCanvasCordinate: CanvasCoordinate;
   newCanvasCordinate: CanvasCoordinate;
+  userUUID: string;
+  hexColor: string;
 }
 interface CanvasResponse {
   Type: string;
   PaintedCanvasCoordinates: PaintedCanvasCoordinate2[];
-  PaintedCanvasCoordinate: PaintedCanvasCoordinate;
+  PaintedCanvasCoordinate: PaintedCanvasCoordinate2;
 }
 
 export const useCanvas = () => {
@@ -42,12 +44,12 @@ export const useCanvas = () => {
           const canvas = canvasRef.current;
           const context = canvas.getContext("2d");
           if (!context) return;
-          context.strokeStyle = "red";
           context.lineJoin = "round";
           context.lineWidth = 1;
           context.beginPath();
 
           PaintedCanvasCoordinates.forEach((t) => {
+            context.strokeStyle = t.hexColor;
             context.moveTo(
               t.originalCanvasCordinate.x,
               t.originalCanvasCordinate.y
@@ -58,9 +60,9 @@ export const useCanvas = () => {
           context.closePath();
           context.stroke();
         } else if (Type === "Realtime") {
-          const { originalCanvasCordinate, newCanvasCordinate } =
+          const { originalCanvasCordinate, newCanvasCordinate, hexColor } =
             PaintedCanvasCoordinate;
-          drawLine(originalCanvasCordinate, newCanvasCordinate);
+          drawLine(originalCanvasCordinate, newCanvasCordinate, hexColor);
         }
       }
     };
@@ -112,7 +114,8 @@ export const useCanvas = () => {
   // Paint
   const drawLine = (
     originalCanvasCordinate: CanvasCoordinate,
-    newCanvasCordinate: CanvasCoordinate
+    newCanvasCordinate: CanvasCoordinate,
+    hexColor: string
   ) => {
     if (!canvasRef.current) {
       return;
@@ -120,7 +123,7 @@ export const useCanvas = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     if (context) {
-      context.strokeStyle = "red";
+      context.strokeStyle = hexColor;
       context.lineJoin = "round";
       context.lineWidth = 1;
 
@@ -138,7 +141,7 @@ export const useCanvas = () => {
       if (isPainting) {
         const newCanvasCordinate = getCanvasCoordinate(event);
         if (canvasCoordinate && newCanvasCordinate) {
-          drawLine(canvasCoordinate, newCanvasCordinate);
+          drawLine(canvasCoordinate, newCanvasCordinate, "red");
           setCanvasCoordinate(newCanvasCordinate);
           if (!socketRef.current) return;
 
