@@ -53,11 +53,10 @@ type (
 		OriginalCanvasCordinate CanvasCoordinate `json:"originalCanvasCordinate"`
 		NewCanvasCordinate      CanvasCoordinate `json:"newCanvasCordinate"`
 	}
-	Item struct {
-		Year   int
-		Title  string
-		Plot   string
-		Rating float64
+	PaintedCanvasCoordinates struct {
+		TenantUUID string
+		SortKey    string
+		PaintedCanvasCoordinate
 	}
 )
 
@@ -81,13 +80,14 @@ func (c *Client) readPump() {
 		var paintedCanvasCoordinate PaintedCanvasCoordinate
 		json.Unmarshal(message, &paintedCanvasCoordinate)
 
-		fmt.Println("---")
-		fmt.Println(fmt.Printf("paintedCanvasCoordinate: %+v", paintedCanvasCoordinate))
-		item := Item{
-			Year:   2015,
-			Title:  "The Big New Movie",
-			Plot:   "Nothing happens at all.",
-			Rating: 0.0,
+		// TODO: get target uuid from client request
+		tableName := "tenant1"
+		tenantUUID := "00000000-0000-0000-0000-000000000001"
+		targetUUID := "00000000-0000-0000-0000-000000000002"
+		item := PaintedCanvasCoordinates{
+			TenantUUID:              tenantUUID,
+			SortKey:                 fmt.Sprintf("draw#%s#%s", targetUUID, time.Now().Format(time.RFC3339Nano)),
+			PaintedCanvasCoordinate: paintedCanvasCoordinate,
 		}
 
 		av, err := attributevalue.MarshalMap(item)
@@ -95,8 +95,7 @@ func (c *Client) readPump() {
 			log.Fatalf("Got error marshalling new movie item: %s", err)
 		}
 		if _, err := c.dynamoDB.PutItem(context.Background(), &dynamodb.PutItemInput{
-			// TODO: get dynamodb table name per tenant
-			TableName: aws.String("tenant1"),
+			TableName: aws.String(tableName),
 			Item:      av,
 		}); err != nil {
 			log.Fatalf("failed to put item, %v", err)
