@@ -52,6 +52,7 @@ func (h *drawHandler) ShareDrawing(hub *draw.Hub) gin.HandlerFunc {
 			return
 		}
 
+		// FIXME: get painted info from REST API because it's simple and make coding easy
 		for _, colorAggregatedCoordinates := range drawedCanvasCoordinates {
 			byteMessage, err := json.Marshal(colorAggregatedCoordinates)
 			if err != nil {

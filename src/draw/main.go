@@ -27,7 +27,7 @@ func main() {
 	drawUsecase := usecases.NewDrawUsecase(drawDA)
 	drawHandler := handlers.NewDrawHandler(drawUsecase)
 
-	r.GET("/ws/", drawHandler.ShareDrawing(hub))
+	r.GET("/draw/", drawHandler.ShareDrawing(hub))
 
 	r.Run()
 }

@@ -1,27 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-interface CanvasCoordinate {
+interface Coordinate {
   X: number;
   Y: number;
 }
 
-interface PaintedCanvasCoordinate {
-  OriginalCoordinate: CanvasCoordinate;
-  NewCoordinate: CanvasCoordinate;
+interface DrawCoordinate {
+  OriginalCoordinate: Coordinate;
+  NewCoordinate: Coordinate;
 }
-interface PaintedCanvasCoordinate2 {
+interface Draw {
   tenantUUID: string;
   sortKey: string;
-  OriginalCoordinate: CanvasCoordinate;
-  NewCoordinate: CanvasCoordinate;
+  OriginalCoordinate: Coordinate;
+  NewCoordinate: Coordinate;
   userUUID: string;
   hexColor: string;
 }
-interface CanvasResponse {
+interface DrawResponse {
   WebsocketType: string;
   HexColor: string;
-  Drawed: PaintedCanvasCoordinate2[];
-  Draw: PaintedCanvasCoordinate2;
+  Drawed: Draw[];
+  Draw: Draw;
 }
 
 export const useCanvas = () => {
@@ -30,7 +30,6 @@ export const useCanvas = () => {
   const socketRef = useRef<WebSocket>();
 
   var drawColor: string;
-
   const storedColor = sessionStorage.getItem("drawColor");
   if (!storedColor) {
     const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -42,7 +41,7 @@ export const useCanvas = () => {
 
   useEffect(() => {
     socketRef.current = new WebSocket(
-      `ws://localhost:8081/ws/?color=${encodeURIComponent(drawColor)}`
+      `ws://localhost:8081/draw/?color=${encodeURIComponent(drawColor)}`
     );
 
     socketRef.current.onmessage = (event) => {
@@ -53,12 +52,12 @@ export const useCanvas = () => {
       let context = canvas.getContext("2d");
       if (!context) return;
 
-      var paintedCanvasCoordinates = event.data.split("\n");
-      for (var i = 0; i < paintedCanvasCoordinates.length; i++) {
-        const tmp = JSON.parse(paintedCanvasCoordinates[i]);
-        const { WebsocketType, HexColor, Draw, Drawed } = tmp as CanvasResponse;
-        console.log("t: ", tmp);
+      var drawResponses = event.data.split("\n");
+      drawResponses.forEach((drawResponse: string) => {
+        const res = JSON.parse(drawResponse);
+        const { WebsocketType, HexColor, Draw, Drawed } = res as DrawResponse;
         if (WebsocketType === "Drawed") {
+          if (!context) return;
           context.lineJoin = "round";
           context.lineWidth = 1;
           context.strokeStyle = HexColor;
@@ -75,7 +74,7 @@ export const useCanvas = () => {
           const { OriginalCoordinate, NewCoordinate } = Draw;
           drawLine(OriginalCoordinate, NewCoordinate, HexColor);
         }
-      }
+      });
     };
 
     return () => {
@@ -85,12 +84,10 @@ export const useCanvas = () => {
 
   const [isPainting, setIsPainting] = useState(false);
   const [canvasCoordinate, setCanvasCoordinate] = useState<
-    CanvasCoordinate | undefined
+    Coordinate | undefined
   >(undefined);
 
-  const getCanvasCoordinate = (
-    event: MouseEvent
-  ): CanvasCoordinate | undefined => {
+  const getCanvasCoordinate = (event: MouseEvent): Coordinate | undefined => {
     if (!canvasRef.current) {
       return;
     }
@@ -124,8 +121,8 @@ export const useCanvas = () => {
 
   // Paint
   const drawLine = (
-    originalCanvasCordinate: CanvasCoordinate,
-    newCanvasCordinate: CanvasCoordinate,
+    originalCanvasCordinate: Coordinate,
+    newCanvasCordinate: Coordinate,
     hexColor: string
   ) => {
     if (!canvasRef.current) {
@@ -133,18 +130,17 @@ export const useCanvas = () => {
     }
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    if (context) {
-      context.strokeStyle = hexColor;
-      context.lineJoin = "round";
-      context.lineWidth = 1;
+    if (!context) return;
+    context.strokeStyle = hexColor;
+    context.lineJoin = "round";
+    context.lineWidth = 1;
 
-      context.beginPath();
-      context.moveTo(originalCanvasCordinate.X, originalCanvasCordinate.Y);
-      context.lineTo(newCanvasCordinate.X, newCanvasCordinate.Y);
-      context.closePath();
+    context.beginPath();
+    context.moveTo(originalCanvasCordinate.X, originalCanvasCordinate.Y);
+    context.lineTo(newCanvasCordinate.X, newCanvasCordinate.Y);
+    context.closePath();
 
-      context.stroke();
-    }
+    context.stroke();
   };
 
   const paint = useCallback(
@@ -156,11 +152,11 @@ export const useCanvas = () => {
           setCanvasCoordinate(newCanvasCordinate);
           if (!socketRef.current) return;
 
-          const paintedCanvasCoordinate: PaintedCanvasCoordinate = {
+          const drawResponse: DrawCoordinate = {
             OriginalCoordinate: canvasCoordinate,
             NewCoordinate: newCanvasCordinate,
           };
-          socketRef.current.send(JSON.stringify(paintedCanvasCoordinate));
+          socketRef.current.send(JSON.stringify(drawResponse));
         }
       }
     },

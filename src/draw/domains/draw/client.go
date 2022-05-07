@@ -15,8 +15,6 @@ const (
 	pongWait       = 60 * time.Second
 	pingPeriod     = (pongWait * 9) / 10
 	maxMessageSize = 512
-	tenantUUID     = "00000000-0000-0000-0000-000000000001"
-	targetUUID     = "00000000-0000-0000-0000-000000000002"
 )
 
 var (
@@ -52,7 +50,12 @@ func (c *Client) ReadPump() {
 	}()
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	c.conn.SetPongHandler(
+		func(string) error {
+			c.conn.SetReadDeadline(time.Now().Add(pongWait))
+			return nil
+		},
+	)
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {

@@ -6,7 +6,6 @@ import (
 )
 
 type (
-	hexColor    string
 	DrawUsecase interface {
 		ShareDrawing(conn *websocket.Conn, hub *draw.Hub, color string) (draw.Websockets, error)
 	}
