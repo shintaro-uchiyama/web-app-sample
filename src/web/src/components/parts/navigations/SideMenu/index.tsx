@@ -1,6 +1,7 @@
 import {
   faBuilding,
   faCalendar,
+  faPaintBrush,
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -72,6 +73,25 @@ function SideMenu() {
                 />
               </span>
               <span className="mx-4 text-sm font-normal">Schedule</span>
+            </Link>
+            <Link
+              className={`
+                w-full flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start border-l-4 ${
+                  location.pathname === "/draw"
+                    ? "text-gray-800 border-purple-500"
+                    : "text-gray-400 border-transparent hover:text-gray-800"
+                } 
+              `}
+              to="/draw"
+            >
+              <span className="text-left">
+                <FontAwesomeIcon
+                  icon={faPaintBrush}
+                  fill="currentColor"
+                  className=""
+                />
+              </span>
+              <span className="mx-4 text-sm font-normal">Draw</span>
             </Link>
           </div>
         </nav>
