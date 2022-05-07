@@ -6,8 +6,7 @@ COPY ./go.sum /app/go.sum
 RUN go mod download
 
 COPY ./.air.toml /app/.air.toml
-RUN go install github.com/cosmtrek/air@v1.29.0 && \
-    go get -u google.golang.org/grpc
+RUN go install github.com/cosmtrek/air@v1.29.0
 
 COPY . /app
 

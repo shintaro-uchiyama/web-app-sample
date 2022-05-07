@@ -1,13 +1,9 @@
 package main
 
 import (
-	"flag"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
-var addr = flag.String("addr", "localhost:8080", "http service address")
 
 func main() {
 	r := gin.Default()
