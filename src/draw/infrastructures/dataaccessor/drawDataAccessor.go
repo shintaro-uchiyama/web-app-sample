@@ -4,45 +4,32 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/shintaro-uchiyama/web-app-sample/draw/domains/draw"
 )
 
 type (
-	CanvasCoordinate struct {
-		X int `json:"x"`
-		Y int `json:"y"`
-	}
-	PaintedCanvasCoordinate struct {
-		OriginalCanvasCordinate CanvasCoordinate `json:"originalCanvasCordinate"`
-		NewCanvasCordinate      CanvasCoordinate `json:"newCanvasCordinate"`
-	}
-	PaintedCanvasCoordinates struct {
-		TenantUUID string
-		SortKey    string
-		PaintedCanvasCoordinate
-		UserUUID string
-		HexColor string `json:"hexColor"`
-	}
-	DrawDataAccessor interface {
-		GetDrawedCoordinates() ([]*PaintedCanvasCoordinates, error)
-		CreateDrawCoordinate(canvasCoordinate *PaintedCanvasCoordinates) error
-	}
 	drawDataAccessor struct {
 		client *dynamodb.Client
 	}
-	DynamoDBScanAPI interface {
-		Scan(ctx context.Context,
-			params *dynamodb.ScanInput,
-			optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
+	CanvasInfo struct {
+		TenantUUID string
+		SortKey    string
+		UserUUID   string
+		HexColor   string
+		*draw.Draw
 	}
 )
 
 const (
+	// TODO: get sql values from request
+	tableName  = "tenant1"
 	tenantUUID = "00000000-0000-0000-0000-000000000001"
 	targetUUID = "00000000-0000-0000-0000-000000000002"
 )
@@ -61,15 +48,15 @@ func NewDrawDataAccessor() (*drawDataAccessor, error) {
 	}, nil
 }
 
-func (a *drawDataAccessor) GetDrawedCoordinates() ([]*PaintedCanvasCoordinates, error) {
+func (a *drawDataAccessor) GetDrawedCanvas() (draw.Websockets, error) {
 	filt1 := expression.Name("TenantUUID").Equal(expression.Value(tenantUUID))
 	filt2 := expression.Name("SortKey").BeginsWith(fmt.Sprintf("draw#%s", targetUUID))
 
 	proj := expression.NamesList(
 		expression.Name("TenantUUID"),
 		expression.Name("SortKey"),
-		expression.Name("OriginalCanvasCordinate"),
-		expression.Name("NewCanvasCordinate"),
+		expression.Name("OriginalCoordinate"),
+		expression.Name("NewCoordinate"),
 		expression.Name("HexColor"),
 	)
 
@@ -83,26 +70,53 @@ func (a *drawDataAccessor) GetDrawedCoordinates() ([]*PaintedCanvasCoordinates, 
 		ExpressionAttributeValues: expr.Values(),
 		FilterExpression:          expr.Filter(),
 		ProjectionExpression:      expr.Projection(),
-		TableName:                 aws.String("tenant1"),
+		TableName:                 aws.String(tableName),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	var items []*PaintedCanvasCoordinates
-	if err = attributevalue.UnmarshalListOfMaps(resp.Items, &items); err != nil {
+	var canvasInfos []CanvasInfo
+	if err = attributevalue.UnmarshalListOfMaps(resp.Items, &canvasInfos); err != nil {
 		return nil, err
 	}
 
-	return items, nil
+	drawedWebsockets := make(draw.Websockets)
+	for _, canvasInfo := range canvasInfos {
+		if _, ok := drawedWebsockets[canvasInfo.HexColor]; !ok {
+			drawedWebsockets[canvasInfo.HexColor] = &draw.Websocket{
+				WebsocketType: draw.DrawedType,
+				UserUUID:      canvasInfo.UserUUID,
+				HexColor:      canvasInfo.HexColor,
+			}
+		}
+		drawedWebsockets[canvasInfo.HexColor].Drawed = append(
+			drawedWebsockets[canvasInfo.HexColor].Drawed,
+			&draw.Draw{
+				OriginalCoordinate: canvasInfo.OriginalCoordinate,
+				NewCoordinate:      canvasInfo.NewCoordinate,
+			},
+		)
+	}
+
+	return drawedWebsockets, nil
 }
 
-func (a *drawDataAccessor) CreateDrawCoordinate(canvasCoordinate *PaintedCanvasCoordinates) error {
-	av, err := attributevalue.MarshalMap(canvasCoordinate)
+func (a *drawDataAccessor) CreateDrawingCanvas(websocket *draw.Websocket) error {
+	av, err := attributevalue.MarshalMap(CanvasInfo{
+		TenantUUID: tenantUUID,
+		SortKey: fmt.Sprintf(
+			"draw#%s#%s#%s",
+			targetUUID,
+			websocket.UserUUID,
+			time.Now().Format(time.RFC3339Nano),
+		),
+		HexColor: websocket.HexColor,
+		Draw:     websocket.Draw,
+	})
 	if err != nil {
 		return err
 	}
-	tableName := "tenant1"
 	if _, err := a.client.PutItem(context.Background(), &dynamodb.PutItemInput{
 		TableName: aws.String(tableName),
 		Item:      av,

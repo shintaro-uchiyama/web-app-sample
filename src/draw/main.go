@@ -1,8 +1,14 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/shintaro-uchiyama/web-app-sample/draw/domains/draw"
+	"github.com/shintaro-uchiyama/web-app-sample/draw/handlers"
+	"github.com/shintaro-uchiyama/web-app-sample/draw/infrastructures/dataaccessor"
+	"github.com/shintaro-uchiyama/web-app-sample/draw/usecases"
 )
 
 func main() {
@@ -11,12 +17,17 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	r.Use(cors.New(config))
 
-	hub := newHub()
-	go hub.run()
+	hub := draw.NewHub()
+	go hub.Run()
 
-	r.GET("/ws/", func(ctx *gin.Context) {
-		serveWs(hub, ctx.Writer, ctx.Request)
-	})
+	drawDA, err := dataaccessor.NewDrawDataAccessor()
+	if err != nil {
+		log.Fatalf("New draw data accessor error: %v", err)
+	}
+	drawUsecase := usecases.NewDrawUsecase(drawDA)
+	drawHandler := handlers.NewDrawHandler(drawUsecase)
+
+	r.GET("/ws/", drawHandler.ShareDrawing(hub))
 
 	r.Run()
 }
