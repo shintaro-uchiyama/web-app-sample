@@ -2,21 +2,15 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"github.com/shintaro-uchiyama/web-app-sample/draw/infrastructures/dataaccessor"
 )
 
 const (
@@ -46,7 +40,7 @@ type (
 	Client struct {
 		hub      *Hub
 		conn     *websocket.Conn
-		dynamoDB *dynamodb.Client
+		drawDA   dataaccessor.DrawDataAccessor
 		send     chan []byte
 		userUUID uuid.UUID
 		hexColor string
@@ -68,13 +62,8 @@ type (
 	}
 	CanvasResponse struct {
 		Type                     string
-		PaintedCanvasCoordinates []PaintedCanvasCoordinates
-		PaintedCanvasCoordinate  PaintedCanvasCoordinates
-	}
-	DynamoDBScanAPI interface {
-		Scan(ctx context.Context,
-			params *dynamodb.ScanInput,
-			optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
+		PaintedCanvasCoordinates []*dataaccessor.PaintedCanvasCoordinates
+		PaintedCanvasCoordinate  *dataaccessor.PaintedCanvasCoordinates
 	}
 )
 
@@ -95,28 +84,18 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		var paintedCanvasCoordinate PaintedCanvasCoordinate
+		var paintedCanvasCoordinate dataaccessor.PaintedCanvasCoordinate
 		json.Unmarshal(message, &paintedCanvasCoordinate)
 
-		// TODO: get target uuid from client request
-		tableName := "tenant1"
-		item := PaintedCanvasCoordinates{
+		item := &dataaccessor.PaintedCanvasCoordinates{
 			TenantUUID:              tenantUUID,
 			SortKey:                 fmt.Sprintf("draw#%s#%s#%s", targetUUID, c.userUUID.String(), time.Now().Format(time.RFC3339Nano)),
 			PaintedCanvasCoordinate: paintedCanvasCoordinate,
 			UserUUID:                c.userUUID.String(),
 			HexColor:                c.hexColor,
 		}
-
-		av, err := attributevalue.MarshalMap(item)
-		if err != nil {
+		if err := c.drawDA.CreateDrawCoordinate(item); err != nil {
 			log.Fatalf("Got error marshalling new movie item: %s", err)
-		}
-		if _, err := c.dynamoDB.PutItem(context.Background(), &dynamodb.PutItemInput{
-			TableName: aws.String(tableName),
-			Item:      av,
-		}); err != nil {
-			log.Fatalf("failed to put item, %v", err)
 		}
 
 		byteMessage, err := json.Marshal(CanvasResponse{
@@ -170,10 +149,6 @@ func (c *Client) writePump() {
 	}
 }
 
-func GetItems(c context.Context, api DynamoDBScanAPI, input *dynamodb.ScanInput) (*dynamodb.ScanOutput, error) {
-	return api.Scan(c, input)
-}
-
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -181,77 +156,36 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(os.Getenv("REGION")), config.WithEndpointResolver(aws.EndpointResolverFunc(
-		func(service, region string) (aws.Endpoint, error) {
-			return aws.Endpoint{URL: os.Getenv("DYNAMO_ENDPOINT")}, nil
-		})))
+	drawDataAccessor, err := dataaccessor.NewDrawDataAccessor()
 	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+		log.Println(err)
+		return
 	}
-	color := r.URL.Query().Get("color")
 
-	dynamoDBClient := dynamodb.NewFromConfig(cfg)
 	client := &Client{
-		hub: hub, conn: conn,
-		dynamoDB: dynamoDBClient,
+		hub:      hub,
+		conn:     conn,
+		drawDA:   drawDataAccessor,
 		send:     make(chan []byte, 256),
 		userUUID: uuid.New(),
-		hexColor: color,
+		hexColor: r.URL.Query().Get("color"),
 	}
 	client.hub.register <- client
 
 	go client.writePump()
 	go client.readPump()
 
-	// Get items in that year.
-	filt1 := expression.Name("TenantUUID").Equal(expression.Value(tenantUUID))
-	// Get items with a rating above the minimum.
-	filt2 := expression.Name("SortKey").BeginsWith(fmt.Sprintf("draw#%s", targetUUID))
-
-	// Get back the title and rating (we know the year).
-	proj := expression.NamesList(
-		expression.Name("TenantUUID"),
-		expression.Name("SortKey"),
-		expression.Name("OriginalCanvasCordinate"),
-		expression.Name("NewCanvasCordinate"),
-		expression.Name("HexColor"),
-	)
-
-	expr, err := expression.NewBuilder().WithFilter(filt1).WithFilter(filt2).WithProjection(proj).Build()
+	items, err := drawDataAccessor.GetDrawedCoordinates()
 	if err != nil {
-		fmt.Println("Got error building expression:")
-		fmt.Println(err.Error())
+		log.Println(err)
 		return
 	}
-
-	input := &dynamodb.ScanInput{
-		ExpressionAttributeNames:  expr.Names(),
-		ExpressionAttributeValues: expr.Values(),
-		FilterExpression:          expr.Filter(),
-		ProjectionExpression:      expr.Projection(),
-		TableName:                 aws.String("tenant1"),
-	}
-
-	resp, err := GetItems(context.Background(), dynamoDBClient, input)
-	if err != nil {
-		fmt.Println("Got an error scanning the table:")
-		fmt.Println(err.Error())
-		return
-	}
-
-	items := []PaintedCanvasCoordinates{}
-
-	if err = attributevalue.UnmarshalListOfMaps(resp.Items, &items); err != nil {
-		panic(fmt.Sprintf("failed to unmarshal Dynamodb Scan Items, %v", err))
-	}
-
-	draws := make(map[string][]PaintedCanvasCoordinates)
+	draws := make(map[string][]*dataaccessor.PaintedCanvasCoordinates)
 	for _, v := range items {
 		draws[v.HexColor] = append(draws[v.HexColor], v)
 	}
 
-	for i, v := range draws {
-		fmt.Println(i)
+	for _, v := range draws {
 		byteItems, err := json.Marshal(CanvasResponse{
 			Type:                     "Stored",
 			PaintedCanvasCoordinates: v,
