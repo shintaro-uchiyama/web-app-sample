@@ -1,0 +1,36 @@
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=arm64 signed-by=$KEY_FILE] https://download.docker.com/linux/ubuntu $RELEASE stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+runcmd:
+  - [
+      sed,
+      -ie,
+      's/ExecStart=\/usr\/bin\/dockerd -H fd:\/\//ExecStart=\/usr\/bin\/dockerd -H tcp:\/\/0.0.0.0:2375 -H fd:\/\//',
+      /lib/systemd/system/docker.service,
+    ]
+  # Workaround: [docker: Error response from daemon: failed to create OCI runtime console socket: listen unix /tmp/pty833253340/pty.sock: bind: operation not permitted: unknown.] error occurred if /tmp mounted.
+  - [
+      sed,
+      -ie,
+      's/ExecStart=\/usr\/bin\/containerd/ExecStart=\/usr\/bin\/containerd\nEnvironment=XDG_RUNTIME_DIR=\/run\/user\/1000/',
+      /lib/systemd/system/containerd.service,
+    ]
+  - [systemctl, daemon-reload]
+  - [systemctl, restart, docker, containerd]
+
+# add default_user (ubuntu) into docker group
+system_info:
+  default_user:
+    groups: [docker]
+
+snap:
+  commands:
+    - [install, multipass-sshfs]
