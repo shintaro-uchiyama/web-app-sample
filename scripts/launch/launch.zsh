@@ -1,11 +1,35 @@
 #!/bin/zsh
 
-# launch multipass
+if [ ! -e ~/.ssh/id_ed25519_docker.pub ]; then
+  read "?Please input email: " email
+  if [ -z $email]; then
+    echo 'email is required'
+    exit 0
+  fi
+
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_docker -C $email
+fi
+
+if ! grep "export MULTIPASS_PUB_KEY=" ~/.zshenv; then
+  echo "export MULTIPASS_PUB_KEY='$(cat ~/.ssh/id_ed25519_docker.pub)'" >> ~/.zshenv
+  source ~/.zshenv
+fi
+
+envsubst < cloud-config-arm64.yaml.template > cloud-config-arm64.yaml
+
+
 if ! multipass list | grep docker; then
   multipass launch --name docker --cpus 4 --mem 8G --disk 20G --cloud-init cloud-config-arm64.yaml 20.04
-  multipass mount /Users docker:/Users
-  multipass mount /private/tmp docker:/tmp
+  multipass transfer scripts/setup/build-git.bash docker:.
 fi
+multipass shell docker
+
+# launch multipass
+# if ! multipass list | grep docker; then
+#   multipass launch --name docker --cpus 4 --mem 8G --disk 20G --cloud-init cloud-config-arm64.yaml 20.04
+#   multipass mount /Users docker:/Users
+#   multipass mount /private/tmp docker:/tmp
+# fi
 
 # create docker context
 # DOCKER_VM_IP=$(multipass info docker --format json | jq -r '.info["docker"].ipv4[0]')

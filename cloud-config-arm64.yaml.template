@@ -4,14 +4,14 @@
 apt:
   sources:
     docker.list:
-      source: deb [arch=arm64 signed-by=] https://download.docker.com/linux/ubuntu  stable
+      source: deb [arch=arm64 signed-by=$KEY_FILE] https://download.docker.com/linux/ubuntu $RELEASE stable
       keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 
 users:
   - name: ubuntu
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh-authorized-keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL3vz18TNqlbY0QV5kx42aXoHW9rmYrvT1Xr4Pq+4msR shintaro.a.uchiyama@gmail.com
+      - ${MULTIPASS_PUB_KEY}
 
 packages:
   - docker-ce

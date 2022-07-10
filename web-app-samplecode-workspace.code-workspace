@@ -1,0 +1,31 @@
+{
+  "folders": [
+    {
+      "path": "../capital-farm/infra/kubernetes"
+    },
+    {
+      "path": "../capital-farm"
+    },
+    {
+      "path": "../dotfiles"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "makefile.extensionOutputFolder": "./.vscode",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.makefile-tools",
+      "vscodevim.vim",
+      "yzhang.markdown-all-in-one",
+      "esbenp.prettier-vscode",
+      "davidanson.vscode-markdownlint",
+      "ms-vscode-remote.remote-ssh"
+    ]
+  }
+}

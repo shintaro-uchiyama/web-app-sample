@@ -37,6 +37,15 @@ cat ~/.ssh/id_ed25519.pub
 
 ### GitHub 操作を容易にするための ghq と fzf 導入
 
+```zsh
+multipass transfer scripts/setup/build-git.bash docker:.
+multipass shell docker
+```
+
+```bash
+bash build-git.bash
+```
+
 ```bash
 # install go
 git clone https://github.com/udhos/update-golang
@@ -54,8 +63,16 @@ source ~/.bashrc
 go install github.com/x-motemen/ghq@latest
 git config --global ghq.root ~/.ghq
 echo "alias cr='cd \$(ghq list -p | fzf --reverse)'" >> ~/.bash_aliases
-echo 'export PATH="~/go/bin/:$PATH"' >> ~/.bashrc
 source ~/.bash_aliases
+echo 'export PATH="~/go/bin/:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# clone web-app-sample
+ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
+
+
+###
+multipass transfer scripts/setup/build-git.bash docker:.
 
 # clone web-app-sample
 ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
