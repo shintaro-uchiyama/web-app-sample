@@ -4,7 +4,7 @@ if [ ! -e ~/.ssh/id_ed25519_docker.pub ]; then
   read "?Please input email: " email
   if [ -z $email]; then
     echo 'email is required'
-    exit 0
+    exit 1
   fi
 
   ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_docker -C $email

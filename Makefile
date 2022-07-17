@@ -6,6 +6,10 @@ launch:
 connect:
 	multipass shell docker
 
+.PHONY: list
+list:
+	multipass list
+
 .PHONY: setup
 setup:
 	bash scripts/setup/change-zsh.bash

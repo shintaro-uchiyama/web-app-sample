@@ -1,6 +1,6 @@
 # 概要
 
-web アプリケーション作成の遊び場
+web アプリケーションの遊び場
 
 ## 前提条件
 
@@ -13,37 +13,51 @@ Mac M1 想定
 ### Multipass を起動
 
 Docker Desktop を使わずに Docker 利用したいので  
-Multipass で ubuntu 環境を作成し、そこでアプリケーション開発を行う
+Multipass で ubuntu 環境を作成し、そこでアプリケーション開発を行う  
+以下コマンドで一通り設定実施
 
 ```zsh
 make launch
-```
 
-### Multipass に接続
-
-```zsh
+# 以降は以下コマンドでMultipass接続できます
 make connect
 ```
 
-### KeyPair の作成
+### GitHub 操作関連で必要なツールの導入
 
-Multipass から GitHub にアクセスしたいので SSH Key pair を作成  
-Github に生成された公開鍵を登録
+以下 Multipass 上での操作想定
 
-```zsh
-ssh-keygen -t ed25519 -C "{{please input your email address}}"
-cat ~/.ssh/id_ed25519.pub
+```bash
+bash build-git.bash
 ```
 
-### GitHub 操作を容易にするための ghq と fzf 導入
+### GitHub へ公開鍵の登録
+
+前項で出力された公開鍵を GitHub に登録  
+以下コマンドで`You've successfully authenticated`が出たら OK!
+
+```bash
+ssh -T git@github.com
+```
+
+### ターミナル環境の拡充
+
+GitHub で管理している dotfiles を用いて各種設定
+
+```bash
+ghq get git@github.com:shintaro-uchiyama/dotfiles.git
+cd .ghq/github.com/shintaro-uchiyama/dotfiles/
+```
+
+### 本リポジトリの clone
+
+```bash
+ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
+```
 
 ```zsh
 multipass transfer scripts/setup/build-git.bash docker:.
 multipass shell docker
-```
-
-```bash
-bash build-git.bash
 ```
 
 ```bash
