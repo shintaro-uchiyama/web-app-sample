@@ -23,10 +23,12 @@ make connect
 
 ### GitHub 操作関連で必要なツールの導入｜ Multipass
 
-以下 Multipass 上での操作想定
+前項のコマンドで初期設定に必要なスクリプトファイルが転送された状態で  
+Multipassのubuntuに接続された状態となるので  
+以下コマンドを実行してGitやDockerなど各種ツールをインストールする
 
 ```bash
-bash build-git.bash
+bash install-tools.bash
 source ~/.bashrc
 ```
 
@@ -55,8 +57,6 @@ source ~/.bashrc
 ```bash
 ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
 ```
-
-### Docker 環境整備 ｜ Multipass
 
 ### IDE の設定｜ Mac
 

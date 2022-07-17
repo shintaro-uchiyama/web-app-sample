@@ -20,6 +20,6 @@ envsubst < cloud-config-arm64.yaml.template > cloud-config-arm64.yaml
 
 if ! multipass list | grep docker; then
   multipass launch --name docker --cpus 4 --mem 8G --disk 20G --cloud-init cloud-config-arm64.yaml 20.04
-  multipass transfer scripts/setup/build-git.bash docker:.
+  multipass transfer scripts/setup/install-tools.bash docker:.
 fi
 multipass shell docker

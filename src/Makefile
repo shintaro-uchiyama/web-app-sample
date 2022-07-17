@@ -6,7 +6,7 @@ setup:
 init:
 	make setup
 	source ~/.bash_profile
-	docker-compose up -d --build
+	docker compose up -d --build
 .PHONY: up
 up:
 	docker compose up -d

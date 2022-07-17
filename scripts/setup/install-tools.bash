@@ -38,10 +38,27 @@ eval "$(cat ~/.bashrc)"
 
 # install necessary packages
 ## remove file to avoid apt error
-sudo mv /etc/apt/sources.list.d/docker.list /etc/apt/sources.list.d/docker.list.bk
+sudo mv /etc/apt/sources.list.d/docker.list /tmp/docker.list.bk
 
 sudo apt update
-sudo apt install make peco python3-pip neovim
+sudo apt install \
+  make \
+  peco \
+  python3-pip \
+  neovim \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+
+# install docker and docker-compose
+
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # output pub key to register github
 cat ~/.ssh/id_ed25519_docker.pub
