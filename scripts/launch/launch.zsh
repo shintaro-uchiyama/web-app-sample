@@ -1,17 +1,17 @@
 #!/bin/zsh
 
-if [ ! -e ~/.ssh/id_ed25519_docker.pub ]; then
+if [ ! -e ~/.ssh/id_ed25519.pub ]; then
   read "?Please input email: " email
   if [ -z $email]; then
     echo 'email is required'
     exit 1
   fi
 
-  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_docker -C $email
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C $email
 fi
 
 if ! grep "export MULTIPASS_PUB_KEY=" ~/.zshenv; then
-  echo "export MULTIPASS_PUB_KEY='$(cat ~/.ssh/id_ed25519_docker.pub)'" >> ~/.zshenv
+  echo "export MULTIPASS_PUB_KEY='$(cat ~/.ssh/id_ed25519.pub)'" >> ~/.zshenv
   source ~/.zshenv
 fi
 

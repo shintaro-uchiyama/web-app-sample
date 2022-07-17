@@ -27,6 +27,7 @@ make connect
 
 ```bash
 bash build-git.bash
+source ~/.bashrc
 ```
 
 ### GitHub へ公開鍵の登録｜ Multipass
@@ -55,10 +56,21 @@ source ~/.bashrc
 ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
 ```
 
-## IDE の設定｜ Mac
+### IDE の設定｜ Mac
 
 IDE は Visual Studio Code の利用を想定  
 まずは[Visual Studio Code](https://code.visualstudio.com/)をインストール
+
+#### Remote SSH 設定｜ Mac
+
+以下コマンド実行して Remote SSH 接続のための設定ファイル生成
+
+```bash
+make create-remote-ssh
+```
+
+VSCode SideMenu の Remote Explore ボタンを押下  
+`multipass-docker`
 
 1. File -> Add Folder to Workspace...で本リポジトリディレクトリを追加
 1. Save Workspace as... でローカルマシンの適当な場所に workspace を保存
