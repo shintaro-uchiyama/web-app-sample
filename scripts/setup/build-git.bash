@@ -36,8 +36,12 @@ source ~/.bash_aliases
 echo 'export PATH="~/go/bin/:$PATH"' >> ~/.bashrc
 eval "$(cat ~/.bashrc)"
 
-# output pub key
-cat ~/.ssh/id_ed25519_docker.pub
+# install necessary packages
+## remove file to avoid apt error
+sudo mv /etc/apt/sources.list.d/docker.list /etc/apt/sources.list.d/docker.list.bk
 
-# clone web-app-sample
-# ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
+sudo apt update
+sudo apt install make peco python3-pip neovim
+
+# output pub key to register github
+cat ~/.ssh/id_ed25519_docker.pub
