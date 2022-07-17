@@ -1,12 +1,6 @@
 {
   "folders": [
     {
-      "path": "../capital-farm/infra/kubernetes"
-    },
-    {
-      "path": "../capital-farm"
-    },
-    {
       "path": "../dotfiles"
     },
     {

@@ -21,11 +21,11 @@ make launch
 make connect
 ```
 
-### GitHub 操作関連で必要なツールの導入｜ Multipass
+### Multipass 上で必要なツールの導入｜ Multipass
 
 前項のコマンドで初期設定に必要なスクリプトファイルが転送された状態で  
-Multipassのubuntuに接続された状態となるので  
-以下コマンドを実行してGitやDockerなど各種ツールをインストールする
+Multipass の ubuntu に接続された状態となるので  
+以下コマンドを実行して Git や Docker など各種ツールをインストールする
 
 ```bash
 bash install-tools.bash
@@ -67,7 +67,7 @@ IDE は Visual Studio Code の利用を想定
 
 以下コマンド実行して Remote SSH 接続のための設定ファイル生成
 
-```bash
+```zsh
 make create-remote-ssh
 ```
 
@@ -76,6 +76,11 @@ VSCode SideMenu の Remote Explore ボタンを押下
 
 #### ワークスペース起動
 
-1. File -> Add Folder to Workspace...で本リポジトリディレクトリを追加
-1. Save Workspace as... でローカルマシンの適当な場所に workspace を保存
+1. File -> Open Workspace from File...で、本リポジトリの`web-app-sample.code-workspace`を選択
 1. extentions で@recommended 入力して全てインストール
+
+### アプリケーション起動
+
+```bash
+make init
+```
