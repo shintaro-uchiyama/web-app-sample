@@ -12,7 +12,7 @@
     "csstools.postcss",
     "bungcip.better-toml",
     "golang.go",
-    "42Crunch.vscode-openapi"
+    "42crunch.vscode-openapi"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": []
