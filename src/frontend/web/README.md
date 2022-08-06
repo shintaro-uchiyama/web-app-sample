@@ -2,38 +2,28 @@
 
 React で記載された SPA
 
-# 環境構築
+## 環境構築
 
-## node 管理ツール
+### node 管理ツール（fnm）
 
-node の管理ツールとして[fnm](https://github.com/Schniz/fnm)をインストール  
-これによりプロジェクト内で同一の node, npm package version を利用できます
+node の管理ツールとして[fnm](https://github.com/Schniz/fnm)を使用する事で  
+プロジェクト内で同一の node, npm package version を利用
 
-1. 実行環境に応じて[fnm をインストール](https://github.com/Schniz/fnm#installation)
-1. 実行環境に応じて[Shell のセットアップ](https://github.com/Schniz/fnm#installation)
-
-以下の通りコマンド実行
+以下コマンドを実行することで必要なツールがインストールされます
 
 ```sh
-$ cat .node-version
-17.5.0
-$ fnm install
-Installing Node v16.14.0 (x64)
-$ fnm use
-Using Node v16.14.0
-$ node -v
-v16.14.0
+make install-node
 ```
 
-## package の更新
+### package の更新
 
-手間ですが以下２点実施ください
+コンテナ内の`node_modules`は  
+ホスト側の`node_modules`と同期されていないため  
+`npm ci`や`npm install some-package`をする際は  
+ホスト・コンテナ双方で実行してください
 
-1. ホスト環境で以下コマンド実施
-   1. `npm install package`を実行
-   1. VSCode で依存を理解するため
-1. docker 環境に package 反映するために以下コマンド実行
-   1. `docker compose up -d --build`
+Docker の Base image に準じた依存関係を使用する目的のために  
+上記手段を選択しました
 
-docker の image を最小にしたいので Remote Containers は使用せず  
-ホストとコンテナ環境の程よい調和を目指します
+VSCode を Remote Containers で Docker に接続させる選択肢も考えましたが  
+docker の image を最小にして、軽量な開発環境を実現したいので使用をしておりません

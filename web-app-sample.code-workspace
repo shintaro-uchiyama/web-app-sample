@@ -1,19 +1,19 @@
 {
   "folders": [
     {
-      "path": "../dotfiles"
-    },
-    {
       "path": "."
     },
     {
-      "path": "src/web"
+      "path": "src/frontend/web"
     }
   ],
   "settings": {
     "makefile.extensionOutputFolder": "./.vscode",
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[shellscript]": {
+      "editor.defaultFormatter": "foxundermoon.shell-format"
+    }
   },
   "extensions": {
     "recommendations": [
