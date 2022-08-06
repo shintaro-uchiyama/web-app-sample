@@ -12,7 +12,8 @@
     "csstools.postcss",
     "bungcip.better-toml",
     "golang.go",
-    "42crunch.vscode-openapi"
+    "42crunch.vscode-openapi",
+    "foxundermoon.shell-format"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": []

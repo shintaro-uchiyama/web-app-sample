@@ -18,8 +18,15 @@ fi
 envsubst < cloud-config-arm64.yaml.template > cloud-config-arm64.yaml
 
 
-if ! multipass list | grep docker; then
-  multipass launch --name docker --cpus 4 --mem 8G --disk 20G --cloud-init cloud-config-arm64.yaml 20.04
-  multipass transfer scripts/setup/install-tools.bash docker:.
+if ! multipass list | grep docker-vm; then
+  # Launch
+  multipass launch --name docker-vm --cpus 4 --mem 8G --disk 20G --cloud-init cloud-config-arm64.yaml 20.04
+
+  # Volume mount
+  multipass mount /Users docker-vm:/Users
+  multipass mount /private/tmp docker-vm:/tmp
+
+  # Set docekr context
+  docker context create docker-vm --docker "host=ssh://ubuntu@docker-vm.local"
+  docker context use docker-vm
 fi
-multipass shell docker

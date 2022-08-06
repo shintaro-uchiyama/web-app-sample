@@ -1,17 +1,30 @@
 SHELL=/bin/zsh
 
-# Multipass operatin on Mac
+# Setup Mac
+.PHONY: install-multipass
+install-multipass:
+	zsh scripts/setup/install-multipass.zsh
+
+.PHONY: install-docker
+install-docker:
+	zsh scripts/setup/install-docker.zsh
+
+.PHONY: install-docker-compose
+install-docker-compose:
+	zsh scripts/setup/install-docker-compose.zsh
+
+# Multipass operation on Mac
 .PHONY: launch
 launch:
 	zsh scripts/launch/launch.zsh
 
-.PHONY: connect
-connect:
-	multipass shell docker
-
 .PHONY: list
 list:
-	multipass list
+	zsh scripts/launch/list.zsh
+
+.PHONY: update-docker-context
+update-docker-context:
+	zsh scripts/launch/update-docker-context.zsh
 
 # Vscode
 .PHONY: create-remote-ssh
