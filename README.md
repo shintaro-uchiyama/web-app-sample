@@ -76,7 +76,12 @@ IDE は Visual Studio Code の利用を想定
 
 ### アプリケーション起動
 
-```bash
+```zsh
 cd src
 make init
 ```
+
+### アクセス
+
+ブラウザで以下アクセスすると対象ページを閲覧できます  
+`http://docker-vm.local:3000/`

@@ -11,12 +11,11 @@ if [ ! -e ~/.ssh/id_ed25519.pub ]; then
 fi
 
 if ! grep "export MULTIPASS_PUB_KEY=" ~/.zshenv; then
-  echo "export MULTIPASS_PUB_KEY='$(cat ~/.ssh/id_ed25519.pub)'" >> ~/.zshenv
+  echo "export MULTIPASS_PUB_KEY='$(cat ~/.ssh/id_ed25519.pub)'" >>~/.zshenv
   source ~/.zshenv
 fi
 
-envsubst < cloud-config-arm64.yaml.template > cloud-config-arm64.yaml
-
+envsubst <cloud-config-arm64.yaml.template >cloud-config-arm64.yaml
 
 if ! multipass list | grep docker-vm; then
   # Launch
