@@ -22,7 +22,6 @@ services:
       POSTGRES_USER: ${WEBAPP_POSTGRES_USER:?err}
       POSTGRES_DB: ${WEBAPP_POSTGRES_DB:?err}
       POSTGRES_PASSWORD: ${WEBAPP_POSTGRES_PASSWORD:?err}
-    tty: true
   websocket:
     container_name: websocket
     build:
@@ -31,7 +30,6 @@ services:
       - ./websocket:/app
     ports:
       - "8081:8080"
-    tty: true
     depends_on:
       - dynamodb
     links:
@@ -75,7 +73,7 @@ services:
     volumes:
       - ./sales/cmd/db-document/output:/usr/share/nginx/html
   api-document:
-    image: redocly/redoc:v2.0.0-rc.59
+    image: redocly/redoc:v2.0.0-rc.74
     container_name: api-ducument
     ports:
       - 83:80
