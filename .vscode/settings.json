@@ -3,10 +3,14 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
   },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   }
 }

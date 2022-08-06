@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# old scripts
+# we used this scripts to setup ubuntu before
+
 # generate ssh key
 if [ ! -e ~/.ssh/id_ed25519_docker.pub ]; then
   read -p "Please input email: " email

@@ -8,71 +8,66 @@ Mac M1 想定
 
 ## 環境構築
 
-### Multipass を起動｜ Mac
-
 Docker Desktop を使わずに Docker 利用したいので  
-Multipass で ubuntu 環境を作成し、そこでアプリケーション開発を行う  
-以下コマンドで一通り設定実施
+Multipass で ubuntu 環境を作成し、そこでアプリケーション開発を行う
+
+### 必要なツールのインストール
+
+#### Multipass
+
+[公式ページ](https://multipass.run/install)に準じて インストール  
+Multipass で Docker Engine を動作させるための Ubuntu 環境構築
+
+参考）
+
+```zsh
+$ make install-multipass
+$
+$ multipass version
+multipass   1.10.1+mac
+multipassd  1.10.1+mac
+```
+
+#### Docker
+
+[公式ページ](https://docs.docker.com/engine/install/binaries/#install-client-binaries-on-macos)に準じて Binary をインストール  
+Docker Desktop は一定条件以上で有償になっちゃったので使わない
+
+参考）以下コマンド実行で 20.10.17 のバージョンがインストールできます
+
+```zsh
+$ make install-docker
+$
+$ docker version
+Client:
+ Version:           20.10.17
+```
+
+#### Docker Compose
+
+[公式ページ](https://docs.docker.com/compose/install/compose-plugin/#install-the-plugin-manually)に準じて Binary をインストール
+
+参考）以下コマンド実行で 2.8.0 のバージョンがインストールできます
+
+```zsh
+$ make install-docker-compose
+$
+$ docker compose version
+Docker Compose version v2.8.0
+```
+
+### Multipass を起動
+
+以下コマンドで Multipass 起動
 
 ```zsh
 make launch
-
-# 以降は以下コマンドでMultipass接続できます
-make connect
 ```
 
-### Multipass 上で必要なツールの導入｜ Multipass
-
-前項のコマンドで初期設定に必要なスクリプトファイルが転送された状態で  
-Multipass の ubuntu に接続された状態となるので  
-以下コマンドを実行して Git や Docker など各種ツールをインストールする
-
-```bash
-bash install-tools.bash
-source ~/.bashrc
-```
-
-### GitHub へ公開鍵の登録｜ Multipass
-
-前項で出力された公開鍵を GitHub に登録  
-以下コマンドで`You've successfully authenticated`が出たら OK!
-
-```bash
-ssh -T git@github.com
-```
-
-### ターミナル環境の拡充｜ Multipass
-
-GitHub で管理している dotfiles を用いて各種設定
-
-```bash
-ghq get git@github.com:shintaro-uchiyama/dotfiles.git
-cd .ghq/github.com/shintaro-uchiyama/dotfiles/ubuntu
-make setup-bash
-source ~/.bashrc
-```
-
-### 本リポジトリの clone ｜ Multipass
-
-```bash
-ghq get git@github.com:shintaro-uchiyama/web-app-sample.git
-```
-
-### IDE の設定｜ Mac
+### IDE の設定
 
 IDE は Visual Studio Code の利用を想定  
 まずは[Visual Studio Code](https://code.visualstudio.com/)をインストール
-
-#### Remote SSH 設定｜ Mac
-
-以下コマンド実行して Remote SSH 接続のための設定ファイル生成
-
-```zsh
-make create-remote-ssh
-```
-
-VSCode SideMenu の Remote Explore ボタンを押下  
-`multipass-docker`にフォーカスで表示されるプラスウィンドウ押下して接続
 
 #### ワークスペース起動
 
@@ -82,5 +77,6 @@ VSCode SideMenu の Remote Explore ボタンを押下
 ### アプリケーション起動
 
 ```bash
+cd src
 make init
 ```
