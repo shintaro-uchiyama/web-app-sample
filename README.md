@@ -64,6 +64,36 @@ Docker Compose version v2.8.0
 make launch
 ```
 
+### Multipass の設定
+
+#### ubuntu 用のツールのインストール
+
+以下コマンドで Multipass に接続
+
+```zsh
+multipass shell docker-vm
+```
+
+以下コマンドで ubuntu に必要なツールをインストール
+
+```bash
+multipass shell docker-vm
+```
+
+#### ubuntu 開発環境構築
+
+ubuntu 上から GitHub にアクセスするために  
+前項で出力された公開鍵を GitHub に登録
+
+そして以下コマンドを実行
+
+```bash
+ghq get git@github.com:shintaro-uchiyama/dotfiles.git
+cd /home/ubuntu/.ghq/github.com/shintaro-uchiyama/dotfiles/ubuntu
+make setup-bash
+source ~/.bashrc
+```
+
 ### IDE の設定
 
 IDE は Visual Studio Code の利用を想定  

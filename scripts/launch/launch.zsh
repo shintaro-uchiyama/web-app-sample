@@ -33,4 +33,7 @@ if ! multipass list | grep docker-vm; then
     echo "${dockerVMIP} docker-vm.local" | sudo tee -a /etc/hosts
     echo "add docker-vm.local ip"
   fi
+
+  # Copy install tool script file
+  multipass transfer scripts/setup/install-tools.bash docker-vm:.
 fi

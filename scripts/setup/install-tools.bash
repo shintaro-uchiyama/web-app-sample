@@ -1,21 +1,18 @@
 #!/bin/bash
 
-# old scripts
-# we used this scripts to setup ubuntu before
-
 # generate ssh key
-if [ ! -e ~/.ssh/id_ed25519_docker.pub ]; then
+if [ ! -e ~/.ssh/id_ed25519.pub ]; then
   read -p "Please input email: " email
   if [ -z $email]; then
     echo 'email is required'
     exit 1
   fi
 
-  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_docker -C $email
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C $email
 
-  cat << EOS > ~/.ssh/config
+  cat <<EOS >~/.ssh/config
 Host *
-     IdentityFile ~/.ssh/id_ed25519_docker
+     IdentityFile ~/.ssh/id_ed25519
 EOS
 fi
 
@@ -23,7 +20,7 @@ fi
 git clone https://github.com/udhos/update-golang
 cd update-golang
 sudo ./update-golang.sh
-echo 'export PATH="/usr/local/go/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/usr/local/go/bin:$PATH"' >>~/.bashrc
 eval "$(cat ~/.bashrc)"
 
 # install fzf
@@ -34,9 +31,9 @@ eval "$(cat ~/.bashrc)"
 # install ghq
 go install github.com/x-motemen/ghq@latest
 git config --global ghq.root ~/.ghq
-echo "alias cr='cd \$(ghq list -p | fzf --reverse)'" >> ~/.bash_aliases
+echo "alias cr='cd \$(ghq list -p | fzf --reverse)'" >>~/.bash_aliases
 source ~/.bash_aliases
-echo 'export PATH="~/go/bin/:$PATH"' >> ~/.bashrc
+echo 'export PATH="~/go/bin/:$PATH"' >>~/.bashrc
 eval "$(cat ~/.bashrc)"
 
 # install necessary packages
@@ -54,14 +51,5 @@ sudo apt install \
   gnupg \
   lsb-release
 
-# install docker and docker-compose
-
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-
 # output pub key to register github
-cat ~/.ssh/id_ed25519_docker.pub
+cat ~/.ssh/id_ed25519.pub
