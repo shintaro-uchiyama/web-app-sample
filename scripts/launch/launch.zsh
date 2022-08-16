@@ -23,9 +23,14 @@ if ! multipass list | grep docker-vm; then
 
   # Volume mount
   multipass mount /Users docker-vm:/Users
-  multipass mount /private/tmp docker-vm:/tmp
 
-  # Set docekr context
-  docker context create docker-vm --docker "host=ssh://ubuntu@docker-vm.local"
-  docker context use docker-vm
+  # Set docker host
+  dockerVMIP=$(multipass info docker-vm --format json | jq -r '.info["docker-vm"].ipv4[0]')
+  if grep docker-vm.local /etc/hosts; then
+    sudo sed -i "" -E "s/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\ docker-vm.local$/${dockerVMIP} docker-vm.local/g" /etc/hosts
+    echo "update docker-vm.local ip"
+  else
+    echo "${dockerVMIP} docker-vm.local" | sudo tee -a /etc/hosts
+    echo "add docker-vm.local ip"
+  fi
 fi

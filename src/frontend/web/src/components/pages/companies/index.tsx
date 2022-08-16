@@ -1,8 +1,8 @@
 import { faCircleChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { DragEvent } from "react";
-import useVerticalResizer from "@/hooks/useVerticalResizer";
-import { FilterTable } from "@/components/parts/tables";
+import useVerticalResizer from "../../../hooks/useVerticalResizer";
+import { FilterTable } from "../../parts/tables";
 
 function Companies() {
   const { refs, resize } = useVerticalResizer();

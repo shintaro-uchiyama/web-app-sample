@@ -17,12 +17,18 @@ packages:
   - gnupg
   - lsb-release
 
+snap:
+  commands:
+    - [install, docker]
+
 runcmd:
+  # Install docker
   - sudo curl -fsSL https://get.docker.com | sudo bash
   - sudo systemctl enable docker
   - sudo systemctl enable -s HUP ssh
   - sudo groupadd docker
   - sudo usermod -aG docker ubuntu
   - sudo systemctl daemon-reload
+  # Install docker compose
   - sudo curl -L "https://github.com/docker/compose/releases/download/v2.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   - sudo chmod +x /usr/local/bin/docker-compose

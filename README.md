@@ -69,9 +69,22 @@ make launch
 IDE は Visual Studio Code の利用を想定  
 まずは[Visual Studio Code](https://code.visualstudio.com/)をインストール
 
+#### Remote SSH 接続
+
+VSCode の Remote Explorer で Multipass の ubuntu 環境に接続する  
+本当は Mac 上で VSCode のファイルを読み込み使用したいが  
+React, Go 共にファイル変更を検知する Hot Reload が動かないので  
+やむを得ず、Remote SSH で Multipass 上の ubuntu に接続し開発を行う
+
+Multipass の mount で Mac 上のファイル変更は ubuntu 上にも反映されているが  
+Hot Reload がファイル変更を検知せず、即時反映されない...
+
+↓ こんな感じで作成した ubuntu 環境に接続できる  
+`ssh ubuntu@docker-vm.local -A`
+
 #### ワークスペース起動
 
-1. File -> Open Workspace from File...で、本リポジトリの`web-app-sample.code-workspace`を選択
+1. File -> Open Workspace from File...で、マウントされた本リポジトリの`web-app-sample.code-workspace`を選択
 1. extentions で@recommended 入力して全てインストール
 
 ### アプリケーション起動

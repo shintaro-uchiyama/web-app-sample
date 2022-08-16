@@ -22,9 +22,9 @@ launch:
 list:
 	zsh scripts/launch/list.zsh
 
-.PHONY: update-docker-context
-update-docker-context:
-	zsh scripts/launch/update-docker-context.zsh
+.PHONY: update-hosts
+update-hosts:
+	zsh scripts/launch/update-hosts.zsh
 
 # Vscode
 .PHONY: create-remote-ssh
