@@ -1,27 +1,37 @@
 import React from "react";
 import * as Y from "yjs";
+import { useEditor, EditorContent } from "@tiptap/react";
+import { Editor } from "@tiptap/core";
+import StarterKit from "@tiptap/starter-kit";
+import Collaboration from "@tiptap/extension-collaboration";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 function Docs() {
-  const doc = new Y.Doc();
-  const yarray = doc.getArray("my-array");
-  yarray.observe((event) => {
-    console.log("yarray was modified");
-    console.log("event", event);
+  // Set up the Hocuspocus WebSocket provider
+  const provider = new HocuspocusProvider({
+    url: "ws://docker-vm.local:1234",
+    name: "example-document",
   });
-  // every time a local or remote client modifies yarray, the observer is called
-  yarray.insert(0, ["val"]); // => "yarray was modified"
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        // The Collaboration extension comes with its own history handling
+        history: false,
+      }),
+      // Register the document with Tiptap
+      Collaboration.configure({
+        document: provider.document,
+      }),
+    ],
+    content: "<p>Hello World!</p>",
+  });
+
   return (
     <div className="App">
       <header className="App-header">
         <p>docs</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Yjssss
-        </a>
+        <EditorContent editor={editor} />
       </header>
     </div>
   );

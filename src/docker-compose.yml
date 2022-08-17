@@ -10,6 +10,12 @@ services:
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
+  doc-websocket:
+    container_name: doc-websocket
+    build:
+      context: ./backend/doc-websocket
+    ports:
+      - "1234:1234"
   sales:
     container_name: sales
     build:

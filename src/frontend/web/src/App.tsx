@@ -15,7 +15,6 @@ function App() {
         <div className="flex items-start justify-between">
           <SideMenu />
           <div className="flex flex-col w-full md:space-y-4">
-            <span>aabccddooppaaajj</span>
             <NavBar />
             <Routes>
               <Route path="companies" element={<Companies />} />

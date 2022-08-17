@@ -3,6 +3,7 @@ import {
   faCalendar,
   faPaintBrush,
   faHome,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
@@ -92,6 +93,25 @@ function SideMenu() {
                 />
               </span>
               <span className="mx-4 text-sm font-normal">Draw</span>
+            </Link>
+            <Link
+              className={`
+                w-full flex items-center pl-6 p-2 my-2 transition-colors duration-200 justify-start border-l-4 ${
+                  location.pathname === "/docs"
+                    ? "text-gray-800 border-purple-500"
+                    : "text-gray-400 border-transparent hover:text-gray-800"
+                } 
+              `}
+              to="/docs"
+            >
+              <span className="text-left">
+                <FontAwesomeIcon
+                  icon={faBook}
+                  fill="currentColor"
+                  className=""
+                />
+              </span>
+              <span className="mx-4 text-sm font-normal">Docs</span>
             </Link>
           </div>
         </nav>
