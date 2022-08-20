@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 function Docs() {
@@ -22,6 +23,13 @@ function Docs() {
       // Register the document with Tiptap
       Collaboration.configure({
         document: provider.document,
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: {
+          name: "Cyndi Lauper",
+          color: "#f783ac",
+        },
       }),
     ],
     content: "<p>Hello World!</p>",
