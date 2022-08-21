@@ -1,3 +1,11 @@
 FROM node:18.7.0-alpine3.15
 
-CMD ["npx", "@hocuspocus/cli", "--port",  "1234", "--sqlite"]
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+EXPOSE 1234
+
+CMD ["npm", "run", "start:dev"]

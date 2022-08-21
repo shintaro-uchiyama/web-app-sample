@@ -32,14 +32,22 @@ function Docs() {
         },
       }),
     ],
-    content: "<p>Hello World!</p>",
   });
 
   return (
     <div className="App">
       <header className="App-header">
         <p>docs</p>
-        <EditorContent editor={editor} />
+        <div
+          style={{
+            backgroundColor: "white",
+            color: "black",
+            width: "800px",
+            height: "400px",
+          }}
+        >
+          <EditorContent editor={editor} />
+        </div>
       </header>
     </div>
   );
