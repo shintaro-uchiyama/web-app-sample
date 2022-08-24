@@ -16,6 +16,10 @@ services:
       context: ./backend/doc-websocket
     volumes:
       - ./backend/doc-websocket:/usr/src/app
+      # use node_modules in container
+      - /usr/src/app/node_modules
+    environment: 
+      YPERSISTENCE: "./dbDir"
     ports:
       - "1234:1234"
   sales:

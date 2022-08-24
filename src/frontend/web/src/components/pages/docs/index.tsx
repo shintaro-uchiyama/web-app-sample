@@ -20,6 +20,7 @@ function Docs() {
         // The Collaboration extension comes with its own history handling
         history: false,
       }),
+
       // Register the document with Tiptap
       Collaboration.configure({
         document: provider.document,
@@ -27,8 +28,8 @@ function Docs() {
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: "Cyndi Lauper",
-          color: "#f783ac",
+          name: Math.random().toString(32).substring(2),
+          color: "#" + Math.floor(Math.random() * 0xffffff).toString(16),
         },
       }),
     ],
