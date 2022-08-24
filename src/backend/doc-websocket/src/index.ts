@@ -6,7 +6,7 @@ const wss = new WebSocketServer({
   noServer: true,
 });
 
-const host: string = "localhost";
+const host: string = "0.0.0.0";
 const port: number = 1234;
 
 const server = http.createServer((request, response) => {
