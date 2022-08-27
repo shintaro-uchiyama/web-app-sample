@@ -4,7 +4,8 @@ WORKDIR /usr/src/app
 
 EXPOSE 5173
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@7.9.5
+RUN pnpm config set store-dir /usr/src/app/.pnpm-store/v3
 
 COPY package.json pnpm-lock.yaml ./
 

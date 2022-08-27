@@ -10,6 +10,16 @@ services:
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
+  library:
+    container_name: library
+    build:
+      context: ./frontend/library
+    volumes:
+      - ./frontend/library:/usr/src/app
+      # use node_modules in container
+      - /usr/src/app/node_modules
+    ports:
+      - "5173:5173"
   doc-websocket:
     container_name: doc-websocket
     build:

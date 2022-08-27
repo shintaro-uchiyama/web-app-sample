@@ -8,6 +8,9 @@
     },
     {
       "path": "../dotfiles"
+    },
+    {
+      "path": "src/frontend/library"
     }
   ],
   "settings": {
