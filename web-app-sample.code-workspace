@@ -4,9 +4,6 @@
       "path": "."
     },
     {
-      "path": "src/frontend/web"
-    },
-    {
       "path": "../dotfiles"
     },
     {
@@ -23,7 +20,10 @@
     "[dockerfile]": {
       "editor.defaultFormatter": "ms-azuretools.vscode-docker"
     },
-    "cSpell.words": ["Multipass", "multipassd"]
+    "cSpell.words": ["Multipass", "multipassd"],
+    "[properties]": {
+      "editor.defaultFormatter": "foxundermoon.shell-format"
+    }
   },
   "extensions": {
     "recommendations": [
