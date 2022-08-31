@@ -19,7 +19,7 @@ envsubst <cloud-config-arm64.yaml.template >cloud-config-arm64.yaml
 
 if ! multipass list | grep docker-vm; then
   # Launch
-  multipass launch --name docker-vm --cpus 4 --mem 8G --disk 20G --cloud-init cloud-config-arm64.yaml 20.04
+  multipass launch --name docker-vm --cpus 4 --mem 8G --disk 100G --cloud-init cloud-config-arm64.yaml 20.04
 
   # Volume mount
   multipass mount /Users docker-vm:/Users

@@ -66,6 +66,31 @@ make launch
 
 ### Multipass の設定
 
+#### dockerコマンドAlias設定
+
+MultipassのAliasコマンド設定
+
+```zsh
+multipass alias "docker-vm:docker compose" "docker compose"
+multipass alias docker-vm:docker docker
+```
+
+`~/.zshrc`に以下の通りMultipass Aliasへのパスを追加
+
+```zsh
+export PATH="$HOME/Library/Application Support/multipass/bin:$PATH"
+```
+
+zshの再読み込み  
+docker composeコマンドが実行できればOK!
+
+```zsh
+$ source ~/.zshrc
+$ cd src
+$ docker compose ps
+NAME                COMMAND             SERVICE             STATUS              PORTS
+```
+
 #### ubuntu 用のツールのインストール
 
 以下コマンドで Multipass に接続
@@ -77,7 +102,7 @@ multipass shell docker-vm
 以下コマンドで ubuntu に必要なツールをインストール
 
 ```bash
-multipass shell docker-vm
+bash install-tools.bash
 ```
 
 #### ubuntu 開発環境構築
@@ -104,7 +129,12 @@ IDE は Visual Studio Code の利用を想定
 VSCode の Remote Explorer で Multipass の ubuntu 環境に接続する
 
 ↓ こんな感じで作成した ubuntu 環境に接続できる  
-`ssh ubuntu@docker-vm.local -A`
+`ssh -i ~/~/.ssh/id_ed25519 ubuntu@docker-vm.local -A`
+
+時折無限ループして接続できない時あるので  
+Mac上の`~/.ssh/known_hosts`の対象ホスト削除したり  
+Multipass上の`~/.vscode-server/bin/`下のファイルを削除したり  
+あの手この手してると接続できるようになったりする
 
 本当は Mac 上で VSCode のファイルを読み込み使用したいが  
 React, Go 共にファイル変更を検知する Hot Reload が動かないので  
