@@ -1,12 +1,11 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "~/pages/index";
+import { Route, Routes } from "react-router-dom";
+import Memo from "~/pages/memo";
 
 const AppRoutes = () => (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Home />}></Route>
-    </Routes>
-  </BrowserRouter>
+  <Routes>
+    <Route path="/memo" element={<Memo />}></Route>
+    <Route path="/" element={<Memo />}></Route>
+  </Routes>
 );
 
 export default AppRoutes;

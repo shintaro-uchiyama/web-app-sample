@@ -1,6 +1,6 @@
-import useDarkMode from "~/components/parts/Toggle/hooks/use-dark-mode";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useDarkMode from "~/components/parts/navigation/DarkModeToggle/hooks/use-dark-mode";
 
 const Toggle = () => {
   const { isDarkMode, changeMode } = useDarkMode();

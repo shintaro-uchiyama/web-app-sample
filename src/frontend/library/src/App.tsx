@@ -1,10 +1,16 @@
+import { BrowserRouter } from "react-router-dom";
+import AuthenticatedLayout from "~/components/layouts/AuthenticatedLayout";
+import { initialize } from "~/features/dark-mode";
 import AppRoutes from "~/routes";
-import { baseBackgroundColor, bodyTextColor } from "./styles/colors";
+
+initialize();
 
 const App = () => (
-  <div className={`h-screen ${baseBackgroundColor} ${bodyTextColor}`}>
-    <AppRoutes />
-  </div>
+  <BrowserRouter>
+    <AuthenticatedLayout>
+      <AppRoutes />
+    </AuthenticatedLayout>
+  </BrowserRouter>
 );
 
 export default App;
