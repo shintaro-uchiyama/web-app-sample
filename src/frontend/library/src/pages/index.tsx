@@ -4,7 +4,7 @@ import Toggle from "~/components/parts/Toggle";
 const App = () => {
   const [count, setCount] = useState(0);
   return (
-    <div className="bg-red-400 dark:bg-gray-400">
+    <>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo" alt="Vite logo" />
@@ -23,7 +23,7 @@ const App = () => {
         Click on the Vite and React logos to learn more
       </p>
       <Toggle />
-    </div>
+    </>
   );
 };
 

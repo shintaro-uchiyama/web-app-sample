@@ -1,7 +1,10 @@
 import AppRoutes from "~/routes";
+import { baseBackgroundColor, bodyTextColor } from "./styles/colors";
 
-function App() {
-  return <AppRoutes />;
-}
+const App = () => (
+  <div className={`h-screen ${baseBackgroundColor} ${bodyTextColor}`}>
+    <AppRoutes />
+  </div>
+);
 
 export default App;
