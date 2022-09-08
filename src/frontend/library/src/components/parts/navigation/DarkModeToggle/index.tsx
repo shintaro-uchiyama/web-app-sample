@@ -1,6 +1,7 @@
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDarkMode from "~/components/parts/navigation/DarkModeToggle/hooks/use-dark-mode";
+import { menuBackgroundColor } from "~/styles/colors";
 
 const Toggle = () => {
   const { isDarkMode, changeMode } = useDarkMode();
@@ -20,16 +21,13 @@ const Toggle = () => {
         }}
       />
       <div
-        className="
-        w-12 h-6 rounded-full bg-blue-600 
-        peer 
-      peer-checked:bg-gray-200
-        peer-checked:after:translate-x-full peer-checked:after:border-white 
-        after:content-[''] 
-        after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border-gray-300 
-        after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
-      dark:bg-gray-700 dark:peer-focus:ring-blue-800 dark:border-gray-600
-     "
+        className={`
+        w-12 h-6 rounded-full ${menuBackgroundColor}
+        peer peer-checked:after:translate-x-full
+        after:absolute after:left-0 after:bg-white after:border-gray-300
+        after:border after:rounded-full after:h-6 after:w-6 after:transition-all 
+      dark:peer-focus:ring-blue-800 dark:border-yellow-600
+     `}
       >
         {isDarkMode && (
           <FontAwesomeIcon className="pl-2 text-yellow-400" icon={faMoon} />

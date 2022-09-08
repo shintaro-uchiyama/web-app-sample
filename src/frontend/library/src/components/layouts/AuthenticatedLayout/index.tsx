@@ -1,6 +1,6 @@
 import NavBar from "~/components/parts/navigation/NavBar";
 import SideMenu from "~/components/parts/navigation/SideMenu";
-import { baseBackgroundColor, bodyTextColor } from "~/styles/colors";
+import { backgroundColor, bodyTextColor } from "~/styles/colors";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => (
   <main
-    className={`h-screen overflow-hidden relative ${baseBackgroundColor} ${bodyTextColor}`}
+    className={`h-screen overflow-hidden relative ${backgroundColor} ${bodyTextColor}`}
   >
     <div className="flex items-start justify-between">
       <SideMenu />
