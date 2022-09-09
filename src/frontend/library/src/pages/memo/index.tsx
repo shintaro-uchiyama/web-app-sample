@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const App = () => {
   const [count, setCount] = useState(0);
+  const { t } = useTranslation(["memo", "common"]);
+
   return (
     <>
       <div>

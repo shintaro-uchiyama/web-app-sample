@@ -1,4 +1,5 @@
 import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import MenuItem, {
   IMenuItemProps,
@@ -7,9 +8,10 @@ import { menuBackgroundColor, titleTextColor } from "~/styles/colors";
 
 const SideMenu = () => {
   const location = useLocation();
+  const { t } = useTranslation(["navigation"]);
   const menuItems: Omit<IMenuItemProps, "currentPath">[] = [
     {
-      text: "Memo",
+      text: t("sideMenu.memo"),
       icon: faBook,
       itemPath: "/memo",
     },
