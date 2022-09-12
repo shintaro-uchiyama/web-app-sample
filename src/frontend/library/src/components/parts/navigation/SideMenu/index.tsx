@@ -18,7 +18,7 @@ const SideMenu = () => {
   ];
   return (
     <div
-      className={`h-screen hidden lg:block shadow-lg relative w-32 ${menuBackgroundColor}`}
+      className={`h-screen block shadow-lg relative w-32 ${menuBackgroundColor}`}
     >
       <div className="h-full">
         <div className="flex items-center justify-start pt-6 ml-4">
@@ -27,8 +27,9 @@ const SideMenu = () => {
           </p>
         </div>
         <nav className="mt-6">
-          {menuItems.map(({ text, icon, itemPath }) => (
+          {menuItems.map(({ text, icon, itemPath }, key) => (
             <MenuItem
+              key={key}
               text={text}
               icon={icon}
               itemPath={itemPath}

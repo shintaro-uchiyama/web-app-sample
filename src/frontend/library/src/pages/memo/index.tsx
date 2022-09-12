@@ -1,30 +1,33 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { bodyTextColor, menuBackgroundColor } from "~/styles/colors";
 
 const App = () => {
-  const [count, setCount] = useState(0);
-  const { t } = useTranslation(["memo", "common"]);
+  const content = [...Array(15)].reduce(
+    (prev, current) => `${prev}<p></p>`,
+    ""
+  );
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        history: false,
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none h-96",
+      },
+    },
+    content,
+  });
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div
+      className={`rounded h-96 max-w-4xl mx-auto ${menuBackgroundColor} ${bodyTextColor}`}
+    >
+      <EditorContent editor={editor} />
+    </div>
   );
 };
 
