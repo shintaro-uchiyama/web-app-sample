@@ -27,8 +27,8 @@ const App = () => {
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: Math.random().toString(32).substring(2),
-          color: "#" + Math.floor(Math.random() * 0xffffff).toString(16),
+          name: getRandomName(),
+          color: getRandomColor(),
         },
       }),
     ],
@@ -49,5 +49,23 @@ const App = () => {
     </div>
   );
 };
+
+const getRandomName = (): string => {
+  const now = new Date();
+
+  return `Guest User ${now.getFullYear()}-${now
+    .getMonth()
+    .toString()
+    .padStart(2, "0")}-${now
+    .getDay()
+    .toString()
+    .padStart(
+      2,
+      "0"
+    )} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`;
+};
+
+const getRandomColor = (): string =>
+  "#" + Math.floor(Math.random() * 0xffffff).toString(16);
 
 export default App;
