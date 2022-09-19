@@ -1,4 +1,5 @@
 import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import { Editor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { WebsocketProvider } from "y-websocket";
@@ -22,6 +23,13 @@ const App = () => {
       }),
       Collaboration.configure({
         document: provider.doc,
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: {
+          name: Math.random().toString(32).substring(2),
+          color: "#" + Math.floor(Math.random() * 0xffffff).toString(16),
+        },
       }),
     ],
     editorProps: {
