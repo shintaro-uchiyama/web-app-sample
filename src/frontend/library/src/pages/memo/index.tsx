@@ -1,5 +1,5 @@
 import Collaboration from "@tiptap/extension-collaboration";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Editor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
@@ -13,7 +13,9 @@ const App = () => {
     "sample",
     yDoc
   );
-  const editor = useEditor({
+  // useEditor causes `Cannot read property 'matchesNode' of null` error
+  // So we use Editor class
+  const editor = new Editor({
     extensions: [
       StarterKit.configure({
         history: false,
