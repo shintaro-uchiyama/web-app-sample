@@ -5,9 +5,9 @@ import StarterKit from "@tiptap/starter-kit";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import { bodyTextColor, menuBackgroundColor } from "~/styles/colors";
+import "./styles.scss";
 
 const App = () => {
-  const content = [...Array(15)].reduce((prev) => `${prev}<p></p>`, "");
   const yDoc = new Y.Doc();
   const provider = new WebsocketProvider(
     "ws://docker-vm.local:1234",
@@ -38,14 +38,13 @@ const App = () => {
           "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none h-96",
       },
     },
-    content,
   });
 
   return (
     <div
       className={`rounded h-96 max-w-4xl mx-auto ${menuBackgroundColor} ${bodyTextColor}`}
     >
-      <EditorContent editor={editor} />
+      <EditorContent className="editor__content" editor={editor} />
     </div>
   );
 };
