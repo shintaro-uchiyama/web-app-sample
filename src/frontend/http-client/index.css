@@ -1,0 +1,23 @@
+#polling-span {
+  width: 140px;
+  cursor: text;
+}
+
+.url-box {
+  width: 450px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.request-body {
+  width: 450px;
+  height: 200px;
+}
+
+.box {
+  margin-top: 8px;
+}
+
+.button {
+  cursor: pointer;
+}

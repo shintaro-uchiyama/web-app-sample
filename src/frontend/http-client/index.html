@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <title>Screen Editor Dummy Page</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h1>Screen Editor Dummy Page</h1>
+    <h2>Polling Events</h2>
+    <div id="polling-response"></div>
+    <form>
+      <div>
+        <label>URL</label>
+      </div>
+      <div class="box">
+        <input
+          id="polling-url"
+          type="text"
+          name="polling-url"
+          class="url-box"
+          value="https://reqres.in/api/users"
+        />
+      </div>
+      <div class="box">
+        <label>ポーリング間隔</label>
+      </div>
+      <div class="box">
+        <input
+          id="polling-span"
+          type="time"
+          name="polling-span"
+          step="0.1"
+          value="00:00:05"
+        />
+      </div>
+      <div class="box">
+        <input class="button" type="button" value="開始" />
+        <input class="button" type="button" value="停止" />
+      </div>
+    </form>
+    <h2>Get Request</h2>
+    <div id="get-response"></div>
+    <form>
+      <div>
+        <label>URL</label>
+      </div>
+      <div class="box">
+        <input
+          id="get-request-url"
+          type="text"
+          name="get-request"
+          class="url-box"
+          value="https://reqres.in/api/users/2"
+        />
+      </div>
+      <div class="box">
+        <input class="button" type="button" value="送信" />
+      </div>
+    </form>
+    <h2>Post Request</h2>
+    <div id="post-response"></div>
+    <form>
+      <div class="box">
+        <label>URL</label>
+      </div>
+      <div class="box">
+        <input
+          id="post-request-url"
+          type="text"
+          name="post-request-url"
+          class="url-box"
+          value="https://reqres.in/api/users"
+        />
+      </div>
+      <div class="box">
+        <label>Request Body</label>
+      </div>
+      <div class="box">
+        <textarea
+          id="post-request-body"
+          type="textarea"
+          name="post-request-body"
+          class="request-body"
+          value="https://reqres.in/api/users/2"
+          rows="4"
+          cols="50"
+        >
+{
+  "name": "morpheus",
+  "job": "leader"
+}
+        </textarea>
+      </div>
+      <div class="box">
+        <input class="button" type="button" value="フォーマット" />
+        <input class="button" type="button" value="送信" />
+      </div>
+    </form>
+  </body>
+</html>
