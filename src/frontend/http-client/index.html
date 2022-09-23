@@ -29,30 +29,36 @@
           id="polling-span"
           type="time"
           name="polling-span"
-          step="0.1"
-          value="00:00:05"
+          step="1"
+          value="00:00:01"
         />
       </div>
       <div class="box">
         <input
+          id="polling-start-button"
           class="button"
           type="button"
           value="開始"
           onclick="startPolling()"
         />
         <input
+          id="polling-stop-button"
           class="button"
           type="button"
           value="停止"
+          disabled="true"
           onclick="stopPolling()"
         />
       </div>
     </form>
     <div class="box">
-      <span>Response Status</span> <span id="polling-response-status"></span>
+      <span>Execution Time: </span> <span id="polling-execution-time"></span>
     </div>
     <div class="box">
-      <span>Response Body</span>
+      <span>Response Status: </span> <span id="polling-response-status"></span>
+    </div>
+    <div class="box">
+      <span>Response Body: </span>
     </div>
     <div id="polling-response-body" class="response-body"></div>
 
