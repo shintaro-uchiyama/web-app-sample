@@ -9,7 +9,7 @@ const startPolling = () => {
 
   const intervalMilliSecond = getIntervalMilliSecond();
   pollingIntervalID = setInterval(() => {
-    httpRequest();
+    httpRequest("polling", "GET");
   }, intervalMilliSecond);
 };
 
@@ -18,38 +18,50 @@ const getIntervalMilliSecond = () => {
   const [hour, minute, second] = pollingSpan.value.split(":");
   return (Number(hour) * 60 * 60 + Number(minute) * 60 + Number(second)) * 1000;
 };
+const executeGetRequest = () => {
+  httpRequest("get", "GET");
+};
 
-const httpRequest = async () => {
-  const pollingExecutionTimeElement = document.getElementById(
-    "polling-execution-time"
+const executePostRequest = () => {
+  httpRequest("post", "POST");
+};
+
+const httpRequest = async (idPrefix, httpMethod) => {
+  const executionTimeElement = document.getElementById(
+    `${idPrefix}-execution-time`
   );
-  pollingExecutionTimeElement.textContent = nowString();
+  executionTimeElement.textContent = nowString();
 
-  const pollingURLElement = document.getElementById("polling-url");
-  const pollingURL = pollingURLElement.value;
-  console.log("pollingURL: ", pollingURL);
+  const urlElement = document.getElementById(`${idPrefix}-url`);
+  const url = urlElement.value;
+
+  const responseBodyElement = document.getElementById(
+    `${idPrefix}-response-body`
+  );
   try {
-    const response = await fetch(pollingURL, { method: "GET" });
-
-    const pollingResponseStatusElement = document.getElementById(
-      "polling-response-status"
+    const requestBodyElement = document.getElementById(
+      `${idPrefix}-request-body`
     );
-    pollingResponseStatusElement.textContent = response.status;
+    console.log("el: ", requestBodyElement);
+    const response = await fetch(url, {
+      method: httpMethod,
+
+      body:
+        requestBodyElement !== null
+          ? JSON.stringify(JSON.stringify(requestBodyElement.value))
+          : undefined,
+    });
+    const responseStatusElement = document.getElementById(
+      `${idPrefix}-response-status`
+    );
+    responseStatusElement.textContent = response.status;
 
     const responseBody = await response.json();
-    const pollingResponseBodyElement = document.getElementById(
-      "polling-response-body"
-    );
-    pollingResponseBodyElement.textContent = JSON.stringify(
-      responseBody,
-      null,
-      4
-    );
+    responseBodyElement.textContent = JSON.stringify(responseBody, null, 4);
   } catch (error) {
-    console.log("error: ", error);
+    responseBodyElement.textContent = error;
+    responseBodyElement.style["color"] = "#ff3300";
   }
-
-  console.log("start polling: ", pollingURLElement.value);
 };
 
 const stopPolling = () => {

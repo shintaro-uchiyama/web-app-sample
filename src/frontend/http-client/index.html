@@ -63,14 +63,13 @@
     <div id="polling-response-body" class="response-body"></div>
 
     <h2>Get Request</h2>
-    <div id="get-response"></div>
     <form>
       <div>
         <label>URL</label>
       </div>
       <div class="box">
         <input
-          id="get-request-url"
+          id="get-url"
           type="text"
           name="get-request"
           class="url-box"
@@ -78,14 +77,22 @@
         />
       </div>
       <div class="box">
-        <input class="button" type="button" value="送信" />
+        <input
+          class="button"
+          type="button"
+          value="送信"
+          onclick="executeGetRequest()"
+        />
       </div>
     </form>
     <div class="box">
-      <span>Response Status</span> <span id="get-response-status"></span>
+      <span>Execution Time: </span> <span id="get-execution-time"></span>
     </div>
     <div class="box">
-      <span>Response Body</span>
+      <span>Response Status: </span> <span id="get-response-status"></span>
+    </div>
+    <div class="box">
+      <span>Response Body: </span>
     </div>
     <div id="get-response-body" class="response-body"></div>
 
@@ -96,7 +103,7 @@
       </div>
       <div class="box">
         <input
-          id="post-request-url"
+          id="post-url"
           type="text"
           name="post-request-url"
           class="url-box"
@@ -105,7 +112,12 @@
       </div>
       <div class="box">
         <label>Request Body</label>
-        <input class="button" type="button" value="フォーマット" />
+        <input
+          class="button"
+          type="button"
+          value="フォーマット"
+          onclick="formatPostRequestBody()"
+        />
       </div>
       <div class="box">
         <textarea
@@ -124,15 +136,23 @@
         </textarea>
       </div>
       <div class="box">
-        <input class="button" type="button" value="送信" />
+        <input
+          class="button"
+          type="button"
+          value="送信"
+          onclick="executePostRequest()"
+        />
       </div>
     </form>
     <div class="box">
-      <span>Response Status</span> <span id="get-response-status"></span>
+      <span>Execution Time: </span> <span id="post-execution-time"></span>
     </div>
     <div class="box">
-      <span>Response Body</span>
+      <span>Response Status: </span> <span id="post-response-status"></span>
     </div>
-    <div id="get-response-body" class="response-body"></div>
+    <div class="box">
+      <span>Response Body: </span>
+    </div>
+    <div id="post-response-body" class="response-body"></div>
   </body>
 </html>
