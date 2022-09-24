@@ -56,7 +56,6 @@ const httpRequest = async (idPrefix, httpMethod) => {
     const requestBodyElement = document.getElementById(
       `${idPrefix}-request-body`
     );
-    console.log("el: ", requestBodyElement);
     const response = await fetch(url, {
       method: httpMethod,
 

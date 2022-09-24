@@ -8,9 +8,18 @@
     <div id="container">
       <div id="login-box">
         <h1>Login</h1>
-        <div id="validation-error-message"></div>
+        <div id="result-message"></div>
         <i class="fa-solid fa-user"></i>
         <form>
+          <div class="box">
+            <input
+              id="url-input"
+              type="text"
+              class="login-form-input"
+              placeholder="Login endpoint for test"
+              value="https://jsonplaceholder.typicode.com/posts"
+            />
+          </div>
           <div class="box">
             <input
               id="account-input"
