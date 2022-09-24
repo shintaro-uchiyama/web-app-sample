@@ -14,6 +14,10 @@
   height: 200px;
 }
 
+#format-error {
+  color: #ff3300;
+}
+
 .response-body {
   white-space: pre;
   width: 500px;

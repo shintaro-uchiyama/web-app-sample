@@ -81,12 +81,14 @@ const httpRequest = async (idPrefix, httpMethod) => {
 
 const formatPostRequestBody = () => {
   const requestBodyElement = document.getElementById("post-request-body");
+  const formatErrorElement = document.getElementById("format-error");
   try {
     requestBodyElement.value = convertToFormattedJson(
       JSON.parse(requestBodyElement.value)
     );
+    formatErrorElement.textContent = "";
   } catch (error) {
-    alert(error);
+    formatErrorElement.textContent = error;
   }
 };
 
