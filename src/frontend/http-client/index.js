@@ -18,6 +18,17 @@ const getIntervalMilliSecond = () => {
   const [hour, minute, second] = pollingSpan.value.split(":");
   return (Number(hour) * 60 * 60 + Number(minute) * 60 + Number(second)) * 1000;
 };
+
+const stopPolling = () => {
+  const pollingStartButton = document.getElementById("polling-start-button");
+  pollingStartButton.removeAttribute("disabled");
+
+  const pollingStopButton = document.getElementById("polling-stop-button");
+  pollingStopButton.setAttribute("disabled", "");
+
+  clearInterval(pollingIntervalID);
+};
+
 const executeGetRequest = () => {
   httpRequest("get", "GET");
 };
@@ -38,6 +49,9 @@ const httpRequest = async (idPrefix, httpMethod) => {
   const responseBodyElement = document.getElementById(
     `${idPrefix}-response-body`
   );
+  const responseStatusElement = document.getElementById(
+    `${idPrefix}-response-status`
+  );
   try {
     const requestBodyElement = document.getElementById(
       `${idPrefix}-request-body`
@@ -51,28 +65,33 @@ const httpRequest = async (idPrefix, httpMethod) => {
           ? JSON.stringify(JSON.stringify(requestBodyElement.value))
           : undefined,
     });
-    const responseStatusElement = document.getElementById(
-      `${idPrefix}-response-status`
-    );
     responseStatusElement.textContent = response.status;
+    responseStatusElement.style["color"] = "#000000";
 
     const responseBody = await response.json();
-    responseBodyElement.textContent = JSON.stringify(responseBody, null, 4);
+    responseBodyElement.textContent = convertToFormattedJson(responseBody);
+    responseBodyElement.style["color"] = "#000000";
   } catch (error) {
+    responseStatusElement.textContent = "Error";
+    responseStatusElement.style["color"] = "#ff3300";
     responseBodyElement.textContent = error;
     responseBodyElement.style["color"] = "#ff3300";
   }
 };
 
-const stopPolling = () => {
-  const pollingStartButton = document.getElementById("polling-start-button");
-  pollingStartButton.removeAttribute("disabled");
-
-  const pollingStopButton = document.getElementById("polling-stop-button");
-  pollingStopButton.setAttribute("disabled", "");
-
-  clearInterval(pollingIntervalID);
+const formatPostRequestBody = () => {
+  const requestBodyElement = document.getElementById("post-request-body");
+  try {
+    requestBodyElement.value = convertToFormattedJson(
+      JSON.parse(requestBodyElement.value)
+    );
+  } catch (error) {
+    alert(error);
+  }
 };
+
+const convertToFormattedJson = (targetJson) =>
+  JSON.stringify(targetJson, null, 2);
 
 const nowString = () => {
   const now = new Date();
