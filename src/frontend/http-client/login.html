@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" />
+    <script src="./login.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="login-box">
+        <h1>Login</h1>
+        <div id="validation-error-message"></div>
+        <i class="fa-solid fa-user"></i>
+        <form>
+          <div class="box">
+            <input
+              id="account-input"
+              type="text"
+              class="login-form-input"
+              placeholder="Account"
+            />
+          </div>
+          <div class="box">
+            <input
+              id="password-input"
+              type="password"
+              class="login-form-input"
+              placeholder="Password"
+            />
+          </div>
+          <div class="box">
+            <input
+              id="login-button"
+              class="button"
+              type="button"
+              value="Login"
+              onclick="login()"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
