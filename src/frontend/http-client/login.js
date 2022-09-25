@@ -1,3 +1,38 @@
+let accounts = [];
+
+fetch("./accounts.json")
+  .then((response) => response.json())
+  .then((json) => {
+    const accountElement = document.getElementById("account-input");
+    if (json.accounts.length >= 1) {
+      const firstAccount = json.accounts[0];
+      accountElement.value = firstAccount.name;
+      if (!firstAccount.needPassword) {
+        const passwordElement = document.getElementById("password-input");
+        passwordElement.style["display"] = "none";
+      }
+    }
+    json.accounts.forEach((account) => {
+      const option = new Option(account.name, account.name);
+      accountElement.add(option);
+    });
+    accounts = json.accounts;
+  });
+
+const judgeShowPassword = (event) => {
+  const foundAccount = accounts.find(
+    (account) => account.name === event.target.value
+  );
+  if (foundAccount === undefined) return;
+
+  const passwordElement = document.getElementById("password-input");
+  if (!foundAccount.needPassword) {
+    passwordElement.style["display"] = "none";
+    return;
+  }
+  passwordElement.style["display"] = null;
+};
+
 const login = async () => {
   try {
     const urlElement = document.getElementById("url-input");

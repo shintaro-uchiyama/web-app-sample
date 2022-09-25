@@ -21,12 +21,13 @@
             />
           </div>
           <div class="box">
-            <input
+            <select
               id="account-input"
-              type="text"
+              type="select"
               class="login-form-input"
               placeholder="Account"
-            />
+              onchange="judgeShowPassword(event)"
+            ></select>
           </div>
           <div class="box">
             <input
@@ -34,6 +35,7 @@
               type="password"
               class="login-form-input"
               placeholder="Password"
+              autocomplete="on"
             />
           </div>
           <div class="box">

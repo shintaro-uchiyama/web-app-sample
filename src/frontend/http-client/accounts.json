@@ -1,0 +1,16 @@
+{
+  "accounts": [
+    {
+      "name": "Administrator",
+      "needPassword": true
+    },
+    {
+      "name": "Operator",
+      "needPassword": false
+    },
+    {
+      "name": "Guest",
+      "needPassword": true
+    }
+  ]
+}
