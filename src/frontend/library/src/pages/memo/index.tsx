@@ -23,6 +23,7 @@ const App = () => {
       }),
       Collaboration.configure({
         document: provider.doc,
+        field: "prosemirror",
       }),
       CollaborationCursor.configure({
         provider: provider,
