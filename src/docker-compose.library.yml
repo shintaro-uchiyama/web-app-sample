@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  web-library:
+    container_name: web-library
+    build:
+      context: ./frontend/web/library
+    volumes:
+      - ./frontend/web/library:/usr/src/app
+      # use node_modules in container
+      - /usr/src/app/node_modules
+    ports:
+      - "5173:5173"

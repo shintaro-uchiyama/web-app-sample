@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^18.7.8",
+    "@types/node": "^18.7.18",
     "@types/ws": "^8.5.3",
     "nodemon": "^2.0.19",
     "rimraf": "^3.0.2",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "ws": "^8.8.1",
+    "y-leveldb": "^0.1.1",
     "y-websocket": "^1.4.4"
   }
 }

@@ -12,5 +12,9 @@ init:
 up:
 	docker compose up -d
 	open http://docker-vm.local:3000/
+.PHONY: up-library
+up-library:
+	docker compose -f ./docker-compose.library.yml up -d
+	open http://docker-vm.local:5173/
 down:
 	docker compose down

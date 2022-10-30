@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/Users/ucwork/ghq/github.com/shintaro-uchiyama/web-app-sample/src/sales'
+make: Leaving directory '/Users/ucwork/ghq/github.com/shintaro-uchiyama/web-app-sample/src/sales'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

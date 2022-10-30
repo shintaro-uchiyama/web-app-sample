@@ -1,55 +1,33 @@
 version: "3.9"
 services:
-  web:
-    container_name: web
+  web-sales:
+    container_name: web-sales
     build:
-      context: ./frontend/web
+      context: ./frontend/web/sales
     volumes:
-      - ./frontend/web:/usr/src/app
+      - ./frontend/web/sales:/usr/src/app
       # use node_modules in container
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
-  library:
-    container_name: library
+  backend-sales:
+    container_name: backend-sales
     build:
-      context: ./frontend/library
+      context: ./backend/sales
     volumes:
-      - ./frontend/library:/usr/src/app
-      # use node_modules in container
-      - /usr/src/app/node_modules
-    ports:
-      - "5173:5173"
-  doc-websocket:
-    container_name: doc-websocket
-    build:
-      context: ./backend/doc-websocket
-    volumes:
-      - ./backend/doc-websocket:/usr/src/app
-      # use node_modules in container
-      - /usr/src/app/node_modules
-    environment: 
-      YPERSISTENCE: "./dbDir"
-    ports:
-      - "1234:1234"
-  sales:
-    container_name: sales
-    build:
-      context: ./sales
-    volumes:
-      - ./sales:/app
+      - ./backend/sales:/app
     ports:
       - "8080:8080"
     environment:
       POSTGRES_USER: ${WEBAPP_POSTGRES_USER:?err}
       POSTGRES_DB: ${WEBAPP_POSTGRES_DB:?err}
       POSTGRES_PASSWORD: ${WEBAPP_POSTGRES_PASSWORD:?err}
-  websocket:
-    container_name: websocket
+  backend-websocket:
+    container_name: backend-websocket
     build:
-      context: ./websocket
+      context: ./backend/websocket
     volumes:
-      - ./websocket:/app
+      - ./backend/websocket:/app
     ports:
       - "8081:8080"
     depends_on:
@@ -61,9 +39,9 @@ services:
       AWS_SECRET_ACCESS_KEY: "DUMMYEXAMPLEKEY"
       REGION: "ap-northeast-1"
       DYNAMO_ENDPOINT: http://dynamodb:8000
-  sales-db:
+  backend-rdbms:
     image: postgres:14.2
-    container_name: sales-db
+    container_name: backend-rdbms
     restart: always
     environment:
       POSTGRES_USER: ${WEBAPP_POSTGRES_USER:?err}
@@ -73,8 +51,8 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - sales-db:/var/lib/postgresql/data
-  pgadmin:
+      - backend-rdbms:/var/lib/postgresql/data
+  backend-rdbms-admin:
     image: dpage/pgadmin4:6.7
     container_name: pgadmin
     restart: always
@@ -86,15 +64,15 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     depends_on:
-      - sales-db
-  db-document:
+      - backend-rdbms
+  backend-rdbms-document:
     image: nginx:1.21.6-alpine
     container_name: db-document
     ports:
       - 82:80
     volumes:
       - ./sales/cmd/db-document/output:/usr/share/nginx/html
-  api-document:
+  backend-sales-document:
     image: redocly/redoc:v2.0.0-rc.74
     container_name: api-ducument
     ports:
@@ -103,7 +81,7 @@ services:
       - ./sales/cmd/api-document/openapi.yml:/usr/share/nginx/html/openapi.yml
     environment:
       SPEC_URL: openapi.yml
-  dynamodb:
+  backend-websocket-no-sql:
     image: amazon/dynamodb-local:1.18.0
     user: root
     command: -jar DynamoDBLocal.jar -sharedDb -dbPath ./data
@@ -113,7 +91,7 @@ services:
     volumes:
       - dynamodb:/home/dynamodblocal/data
     working_dir: /home/dynamodblocal
-  dynamodb-admin:
+  backend-websocket-no-sql-admin:
     container_name: dynamodb-admin
     image: aaronshaf/dynamodb-admin:4.4.0
     environment:
@@ -123,6 +101,6 @@ services:
     depends_on:
       - dynamodb
 volumes:
-  sales-db:
+  backend-rdbms:
   pgadmin:
   dynamodb:

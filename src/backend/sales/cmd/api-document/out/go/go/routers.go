@@ -10,6 +10,9 @@
 package openapi
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -81,6 +84,24 @@ func Index(c *gin.Context) {
 	c.String(http.StatusOK, "Hello World!")
 }
 
+func Callback(c *gin.Context) {
+	jsonData, err := ioutil.ReadAll(c.Request.Body)
+if err != nil {
+	fmt.Println(fmt.Printf("err: %+v", err))
+	c.String(http.StatusBadRequest , "Error!")
+    // Handle error
+}
+	fmt.Println(fmt.Printf("jsondata: %+v", jsonData))
+	var d interface{}
+	err= json.Unmarshal(jsonData, &d)
+    if err != nil {
+	fmt.Println(fmt.Printf("unm err: %+v", err))
+	c.String(http.StatusBadRequest , "unm Error!")
+    }
+	fmt.Println(fmt.Printf("d: %+v", d))
+	c.String(http.StatusOK, "Hello World!")
+}
+
 var routes = Routes{
 	{
 		"Index",
@@ -94,5 +115,12 @@ var routes = Routes{
 		http.MethodGet,
 		"/users",
 		UsersGet,
+	},
+
+	{
+		"Callback",
+		http.MethodPost,
+		"/callback",
+		Callback,
 	},
 }
