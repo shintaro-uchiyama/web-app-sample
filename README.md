@@ -66,23 +66,23 @@ make launch
 
 ### Multipass の設定
 
-#### dockerコマンドAlias設定
+#### docker コマンド Alias 設定
 
-MultipassのAliasコマンド設定
+Multipass の Alias コマンド設定
 
 ```zsh
 multipass alias "docker-vm:docker compose" "docker compose"
 multipass alias docker-vm:docker docker
 ```
 
-`~/.zshrc`に以下の通りMultipass Aliasへのパスを追加
+`~/.zshrc`に以下の通り Multipass Alias へのパスを追加
 
 ```zsh
 export PATH="$HOME/Library/Application Support/multipass/bin:$PATH"
 ```
 
-zshの再読み込み  
-docker composeコマンドが実行できればOK!
+zsh の再読み込み  
+docker compose コマンドが実行できれば OK!
 
 ```zsh
 $ source ~/.zshrc
@@ -113,6 +113,7 @@ ubuntu 上から GitHub にアクセスするために
 そして以下コマンドを実行
 
 ```bash
+source ~/.bashrc
 ghq get git@github.com:shintaro-uchiyama/dotfiles.git
 cd /home/ubuntu/.ghq/github.com/shintaro-uchiyama/dotfiles/ubuntu
 make setup-bash
@@ -132,8 +133,8 @@ VSCode の Remote Explorer で Multipass の ubuntu 環境に接続する
 `ssh -i ~/~/.ssh/id_ed25519 ubuntu@docker-vm.local -A`
 
 時折無限ループして接続できない時あるので  
-Mac上の`~/.ssh/known_hosts`の対象ホスト削除したり  
-Multipass上の`~/.vscode-server/bin/`下のファイルを削除したり  
+Mac 上の`~/.ssh/known_hosts`の対象ホスト削除したり  
+Multipass 上の`~/.vscode-server/bin/`下のファイルを削除したり  
 あの手この手してると接続できるようになったりする
 
 本当は Mac 上で VSCode のファイルを読み込み使用したいが  
