@@ -1,14 +1,13 @@
 # 概要
 
-web アプリケーションの遊び場
+UCWORKの遊び場  
+Library的に切り出せるもの以外はここに詰め込む
 
 ## 前提条件
-
-Mac M1 想定
+MacM1 想定
 
 ## 環境構築
-
-Docker Desktop を使わずに Docker 利用したいので  
+DockerDesktop を使わず無料で Docker 利用したいので  
 Multipass で ubuntu 環境を作成し、そこでアプリケーション開発を行う
 
 ### 必要なツールのインストール
@@ -68,7 +67,9 @@ make launch
 
 #### docker コマンド Alias 設定
 
-Multipass の Alias コマンド設定
+Multipass の Alias コマンド設定  
+これによりMac上でdockerコマンド実行すると  
+Multipass(Ubuntu)上でdockerコマンドが実行される
 
 ```zsh
 multipass alias "docker-vm:docker compose" "docker compose"
@@ -99,7 +100,8 @@ NAME                COMMAND             SERVICE             STATUS              
 multipass shell docker-vm
 ```
 
-以下コマンドで ubuntu に必要なツールをインストール
+接続したMultipass内で  
+以下コマンド実行し ubuntu に必要なツールをインストール
 
 ```bash
 bash install-tools.bash
@@ -143,6 +145,18 @@ React, Go 共にファイル変更を検知する Hot Reload が動かないの�
 
 Multipass の mount で Mac 上のファイル変更は ubuntu 上にも反映されているが  
 Hot Reload がファイル変更を検知せず、即時反映されない...
+
+##### Passphraseの省略
+
+毎度Remote SSH接続時にPassphrase入力するのは手間なので  
+↓を`~/.ssh/config`に追記すれば初回のみの入力で良くなる
+
+```config: ~/.ssh/config
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+```
 
 #### ワークスペース起動
 
