@@ -1,47 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-
+import Quill, { Sources } from "quill";
+import "quill/dist/quill.bubble.css";
+import { useEffect, useRef } from "react";
 
 const Memo = () => {
-  const [value, setValue] = useState('');
+  const editorRef = useRef<HTMLDivElement>(null);
 
-  const usePrevious = (value: string) => {
-    const ref = useRef('');
-    useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  };
-
-  const [date, setDate] = useState('');
-  const prev = usePrevious(date)
-  const callback = ()=>{
-     const now = new Date();
-     const today = `${now.getFullYear()}.${(now.getMonth()+1).toString().padStart(2,"0")}.${now.getDate().toString().padStart(2,"0")} ${now.getSeconds()}`
-     console.log('prev: ', prev)
-     console.log('date: ', date)
-     setDate(today)
-  }
-  const callbackRef = useRef<() => void>(callback);
   useEffect(() => {
-    callbackRef.current = callback; // 新しいcallbackをrefに格納！
-  }, [callback]);
+    if (!editorRef.current) return;
 
-  useEffect(()=>{
-    const tick = () => { callbackRef.current() } 
-    const id = setInterval(tick, 1000);
-    return () => {
-      clearInterval(id);
-    };
-  }, [])
+    const quill = new Quill(editorRef.current, {
+      theme: "bubble",
+      placeholder: "test",
+    });
+    quill.on(
+      "text-change",
+      (_delta: any, _oldContents: any, source: Sources) => {
+        if (source !== "user") return;
 
-
-  return <ReactQuill theme="snow" value={value} onChange={setValue} >
-    <div style={{height: '600px'}}>{date}</div>
-  </ReactQuill>;
-
+        const text = quill.getText();
+        quill.formatText(0, text.length, "color", "white");
+        [...text.matchAll(/[a-zA-Z][1-9]/g)].forEach((match) => {
+          if (!match.index) return;
+          quill.formatText(match.index, match[0].length, "color", "red");
+          quill.formatText(
+            match.index + match[0].length,
+            text.length - (match.index + match[0].length),
+            "color",
+            "white"
+          );
+        });
+      }
+    );
+  }, [editorRef]);
+  return <div ref={editorRef} />;
 };
-
 
 export default Memo;
