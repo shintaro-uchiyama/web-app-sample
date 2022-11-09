@@ -35,6 +35,32 @@ const useEditor = () => {
         });
       }
     );
+
+    quill.on(
+      "selection-change",
+      (_delta: any, _oldContents: any, source: Sources) => {
+        console.log("source: ", source);
+
+        const selection = quill.getSelection();
+        console.log("selection: ", selection);
+        if (!selection) return;
+
+        const text = quill.getText();
+        const focusedMatch = [...text.matchAll(/[a-zA-Z][1-9]/g)].find(
+          (match) => {
+            if (!match.index) return;
+            return (
+              match.index <= selection.index &&
+              selection.index <= match.index + match[0].length
+            );
+          }
+        );
+
+        if (focusedMatch) {
+          console.log("focusedMatchFound: ", focusedMatch);
+        }
+      }
+    );
   }, [editorRef]);
 
   return {
