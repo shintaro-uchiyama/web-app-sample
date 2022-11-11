@@ -16,3 +16,5 @@
 
 cloud-config-arm64.yaml
 .vscode/*.log
+
+.DS_Store

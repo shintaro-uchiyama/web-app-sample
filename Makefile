@@ -18,14 +18,6 @@ install-docker-compose:
 launch:
 	zsh scripts/launch/launch.zsh
 
-.PHONY: list
-list:
-	zsh scripts/launch/list.zsh
-
-.PHONY: update-hosts
-update-hosts:
-	zsh scripts/launch/update-hosts.zsh
-
 # Vscode
 .PHONY: create-remote-ssh
 create-remote-ssh:

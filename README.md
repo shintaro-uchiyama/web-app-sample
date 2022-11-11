@@ -131,6 +131,12 @@ IDE は Visual Studio Code の利用を想定
 
 #### Remote SSH 接続
 
+以下コマンドを実行して
+
+```zsh
+make create-remote-ssh
+```
+
 VSCode の Remote Explorer で Multipass の ubuntu 環境に接続する
 
 ↓ こんな感じで作成した ubuntu 環境に接続できる  

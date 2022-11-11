@@ -1,21 +1,31 @@
 #!/bin/zsh
 
-multipassIP=`multipass list | awk '{print $3}' | tail -n 1`
+multipassIP=$(multipass list | awk '{print $3}' | head -n 2 | tail -n 1)
 
 if [ -z ${multipassIP} ]; then
   echo "multipass instance not found"
   exit 1
 fi
 
-if grep 'Host multipass-docker' ~/.ssh/config; then
-  echo "host multipass-docker already exist"
-  exit 1
+touch ~/.ssh/config
+
+if ! grep 'Host docker-vm.local' ~/.ssh/config; then
+  cat <<EOS >>~/.ssh/config
+  Host docker-vm.local
+    User ubuntu
+    HostName docker-vm.local
+    IdentityFile ~/.ssh/id_ed25519
+EOS
+  echo "host docker-vm.local is added"
 fi
 
-cat << EOS >> ~/.ssh/config
+if ! grep 'AddKeysToAgent yes' ~/.ssh/config; then
+  cat <<EOS >>~/.ssh/config
 
-Host multipass-docker
-  User ubuntu
-  HostName ${multipassIP}
-  IdentityFile ~/.ssh/id_ed25519
+  Host *
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/id_ed25519
 EOS
+  echo "omit passphrase setting added"
+fi

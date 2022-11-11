@@ -1,13 +1,10 @@
 {
   "folders": [
     {
-      "path": "src/infra"
-    },
-    {
-      "path": "src/backend/doc-websocket"
-    },
-    {
       "path": "."
+    },
+    {
+      "path": "src/frontend/web/library"
     }
   ],
   "settings": {
