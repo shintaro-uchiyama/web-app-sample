@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { TextPresentation } from "~/pages/tick/components/Text/presentation";
+import Text from "~/pages/tick/components/Text/presentation";
 
-export const Text = () => {
+const TextContainer = () => {
   useEffect(() => {
     console.log("Text component use effect");
   });
 
-  return <TextPresentation text={"Text component"} />;
+  return <Text text={"Text component"} />;
 };
+
+export default TextContainer;

@@ -1,2 +1,2 @@
-export * from "~/pages/tick/components/Image";
-export * from "~/pages/tick/components/Text";
+export { default as Image } from "~/pages/tick/components/Image";
+export { default as Text } from "~/pages/tick/components/Text";
