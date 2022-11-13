@@ -1,12 +1,11 @@
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "~/app/store";
 import Text from "~/pages/tick/components/Text/presentation";
 
 const TextContainer = () => {
-  useEffect(() => {
-    console.log("Text component use effect");
-  });
+  const count = useSelector((state: RootState) => state.counter.value);
 
-  return <Text text={"Text component"} />;
+  return <Text text={count.toString()} />;
 };
 
 export default TextContainer;

@@ -4,10 +4,12 @@ interface ImageProps {
   src: string;
 }
 
-export const ImagePresentation = ({ src }: ImageProps) => {
+const Image = ({ src }: ImageProps) => {
   useEffect(() => {
     console.log("Image component use effect");
   });
 
   return <img src={src} />;
 };
+
+export default Image;

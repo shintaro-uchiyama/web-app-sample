@@ -1,23 +1,21 @@
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "~/app/store";
-import { decrement, increment } from "~/features/counter/counterSlice";
+import { useDispatch } from "react-redux";
+import { decrement } from "~/features/counter/counterSlice";
+import { render } from "~/features/render/renderSlice";
 import { Image, Text } from "~/pages/tick/components";
 import useTick from "./hooks/use-tick";
 
 export function Tick() {
-  const count = useSelector((state: RootState) => state.counter.value);
+  // const count = useSelector((state: RootState) => state.counter.value);
   const dispatch = useDispatch();
   useTick();
 
   return (
     <>
-      <div>
-        <span>{count}</span>
-      </div>
+      <div></div>
       <div>
         <button
           aria-label="Increment value"
-          onClick={() => dispatch(increment())}
+          onClick={() => dispatch(render("ee"))}
         >
           Increment
         </button>
@@ -28,6 +26,11 @@ export function Tick() {
           onClick={() => dispatch(decrement())}
         >
           Decrement
+        </button>
+      </div>
+      <div>
+        <button aria-label="render " onClick={() => dispatch(render("aaa"))}>
+          render
         </button>
       </div>
       <Image />

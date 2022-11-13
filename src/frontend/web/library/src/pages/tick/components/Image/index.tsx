@@ -1,8 +1,8 @@
 import dummy1 from "~/assets/dummy1.png";
-import { ImagePresentation } from "~/pages/tick/components/Image/presentation";
+import Image from "~/pages/tick/components/Image/presentation";
 
-const Image = () => {
-  return <ImagePresentation src={dummy1} />;
+const ImageContainer = () => {
+  return <Image src={dummy1} />;
 };
 
-export default Image;
+export default ImageContainer;
