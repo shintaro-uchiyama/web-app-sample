@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { decrement } from "~/features/counter/counterSlice";
+import { decrement, increment } from "~/features/counter/counterSlice";
 import { render } from "~/features/render/renderSlice";
 import { Image, Text } from "~/pages/tick/components";
 import useTick from "./hooks/use-tick";
@@ -15,7 +15,10 @@ export function Tick() {
       <div>
         <button
           aria-label="Increment value"
-          onClick={() => dispatch(render("ee"))}
+          onClick={() => {
+            dispatch(increment());
+            dispatch(increment());
+          }}
         >
           Increment
         </button>
