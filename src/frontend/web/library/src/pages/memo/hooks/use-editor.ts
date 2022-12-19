@@ -5,14 +5,17 @@ interface IUseEditor {
   editorRef: React.RefObject<HTMLDivElement>;
 }
 
-const useEditor = () => {
+const useEditor = (): IUseEditor => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!editorRef.current) return;
 
     const quill = new Quill(editorRef.current, {
-      theme: "bubble",
+      theme: "snow",
+      modules: {
+        toolbar: false, // Snow includes toolbar by default
+      },
       placeholder: "test",
     });
 
@@ -22,7 +25,7 @@ const useEditor = () => {
         if (source !== "user") return;
 
         const text = quill.getText();
-        quill.formatText(0, text.length, "color", "white");
+        quill.formatText(0, text.length, "color", "blue");
         [...text.matchAll(/[a-zA-Z][1-9]/g)].forEach((match) => {
           if (!match.index) return;
           quill.formatText(match.index, match[0].length, "color", "red");
@@ -30,7 +33,7 @@ const useEditor = () => {
             match.index + match[0].length,
             text.length - (match.index + match[0].length),
             "color",
-            "white"
+            "blue"
           );
         });
       }
